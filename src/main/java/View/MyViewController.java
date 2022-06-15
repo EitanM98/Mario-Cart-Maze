@@ -1,14 +1,30 @@
 package View;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
 
-public class MyViewController implements IView {
-    @FXML
-    private Label welcomeText;
+public class MyViewController {
+    public MazeGenerator generator;
+    public TextField textField_mazeRows;
+    public TextField textField_mazeColumns;
+    public MazeDisplayer mazeDisplayer;
 
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    public void generateMaze(ActionEvent actionEvent) {
+        if(generator == null)
+            generator = new MazeGenerator();
+
+        int rows = Integer.parseInt(textField_mazeRows.getText());
+        int cols = Integer.parseInt(textField_mazeColumns.getText());
+
+        int[][] maze = generator.generateRandomMaze(rows, cols);
+
+        mazeDisplayer.drawMaze(maze);
+    }
+
+    public void solveMaze(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("Solving maze...");
+        alert.show();
     }
 }
