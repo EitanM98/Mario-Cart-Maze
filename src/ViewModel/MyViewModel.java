@@ -1,6 +1,7 @@
 package ViewModel;
 
 import Model.IModel;
+import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyEvent;
 
 import java.util.Observable;
@@ -9,9 +10,9 @@ import java.util.Observer;
 public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
-    private int [][] maze;
-    private int rowChar;
-    private int colChar;
+    private Maze maze;
+    private int curRow;
+    private int curCol;
 
 
     public MyViewModel(IModel model) {
@@ -21,17 +22,17 @@ public class MyViewModel extends Observable implements Observer {
     }
 
 
-    public int[][] getMaze() {
+    public Maze getMaze() {
         return maze;
     }
 
 
-    public int getRowChar() {
-        return rowChar;
+    public int getCurRow() {
+        return curRow;
     }
 
-    public int getColChar() {
-        return colChar;
+    public int getCurCol() {
+        return curCol;
     }
 
     @Override
@@ -43,20 +44,20 @@ public class MyViewModel extends Observable implements Observer {
                 this.maze = model.getMaze();
             }
             else {
-                int[][] maze = model.getMaze();
+                Maze maze = model.getMaze();
 
                 if (maze == this.maze)//Not generateMaze, Move character
                 {
-                    int rowChar = model.getRowChar();
-                    int colChar = model.getColChar();
-                    if(this.colChar == colChar && this.rowChar == rowChar)//Solve Maze
+                    int rowChar = model.getCurRow();
+                    int colChar = model.getCurCol();
+                    if(this.curCol == colChar && this.curRow == rowChar)//Solve Maze
                     {
                         model.getSolution();
                     }
                     else//Update location
                     {
-                        this.rowChar = rowChar;
-                        this.colChar = colChar;
+                        this.curRow = rowChar;
+                        this.curCol = colChar;
                     }
 
 
@@ -73,9 +74,22 @@ public class MyViewModel extends Observable implements Observer {
     }
 
 
-    public void generateMaze(int row,int col)
-    {
-        this.model.generateRandomMaze(row,col);
+    public void generateMaze(String row_fromUser,String col_fromUser) throws Exception {
+        int rows=0;
+        int cols=0;
+        String message="";
+        try {
+            rows = Integer.parseInt(row_fromUser);
+            cols = Integer.parseInt(col_fromUser);
+            if(rows<=0 || cols<=0)
+                message="Quantity of rows and cols must be positive integer,\n Please try again";
+        } catch (NumberFormatException e) {
+            message="Only numeric characters allowed";
+        }
+        if(!message.equals("")){
+            throw new Exception(message);
+        }
+        this.model.generateRandomMaze(rows,cols);
     }
 
     public void moveCharacter(KeyEvent keyEvent)
@@ -83,24 +97,37 @@ public class MyViewModel extends Observable implements Observer {
         int direction = -1;
 
         switch (keyEvent.getCode()){
-            case UP:
+            case NUMPAD8:
                 direction = 1;
                 break;
-            case DOWN:
+            case NUMPAD2:
                 direction = 2;
                 break;
-            case LEFT:
+            case NUMPAD4:
                 direction = 3;
                 break;
-            case RIGHT:
+            case NUMPAD6:
                 direction = 4;
                 break;
+            case NUMPAD7:
+                direction=5;
+                break;
+            case NUMPAD9:
+                direction=6;
+                break;
+            case NUMPAD3:
+                direction=7;
+                break;
+            case NUMPAD1:
+                direction=8;
+                break;
+
         }
 
         model.updateCharacterLocation(direction);
     }
 
-    public void solveMaze(int [][] maze)
+    public void solveMaze(Maze maze)
     {
         model.solveMaze(maze);
     }

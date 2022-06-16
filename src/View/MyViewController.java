@@ -1,6 +1,7 @@
 package View;
 
 import ViewModel.MyViewModel;
+import algorithms.mazeGenerators.Maze;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -16,7 +17,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class MyViewController implements Initializable,Observer {
+public class MyViewController implements Initializable,Observer,IView {
     private MyViewModel viewModel;
     @FXML
     public TextField textField_mazeRows;
@@ -30,7 +31,7 @@ public class MyViewController implements Initializable,Observer {
     public Label lbl_player_column;
     StringProperty update_player_position_row = new SimpleStringProperty();
     StringProperty update_player_position_col = new SimpleStringProperty();
-    private int [][] maze;
+    private Maze maze;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,11 +64,16 @@ public class MyViewController implements Initializable,Observer {
 
     public void generateMaze()
     {
-        int rows = Integer.parseInt(textField_mazeRows.getText());
-        int cols =  Integer.parseInt(textField_mazeColumns.getText());
-        viewModel.generateMaze(rows,cols);
-
-
+        try {
+            viewModel.generateMaze(textField_mazeRows.getText(),textField_mazeColumns.getText());
+//            set_update_player_position_col(viewModel.getCurCol()+"");
+//            set_update_player_position_row(viewModel.getCurRow()+"");
+//            this.mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
+        } catch (Exception e) {//Wrong parameters
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText(e.getMessage());;
+            alert.show();
+        }
     }
 
     public void solveMaze()
@@ -80,7 +86,7 @@ public class MyViewController implements Initializable,Observer {
     public void showAlert(String message)
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);;
+        alert.setContentText(message);
         alert.show();
     }
 
@@ -107,14 +113,14 @@ public class MyViewController implements Initializable,Observer {
                 drawMaze();
             }
             else {
-                int[][] maze = viewModel.getMaze();
+                Maze maze = viewModel.getMaze();
 
                 if (maze == this.maze)//Not generateMaze
                 {
                     int rowChar = mazeDisplayer.getRow_player();
                     int colChar = mazeDisplayer.getCol_player();
-                    int rowFromViewModel = viewModel.getRowChar();
-                    int colFromViewModel = viewModel.getColChar();
+                    int rowFromViewModel = viewModel.getCurRow();
+                    int colFromViewModel = viewModel.getCurCol();
 
                     if(rowFromViewModel == rowChar && colFromViewModel == colChar)//Solve Maze
                     {
@@ -126,6 +132,8 @@ public class MyViewController implements Initializable,Observer {
                         set_update_player_position_row(rowFromViewModel + "");
                         set_update_player_position_col(colFromViewModel + "");
                         this.mazeDisplayer.set_player_position(rowFromViewModel,colFromViewModel);
+                        if(mazeDisplayer.checkIfSolved())
+                            showAlert("Congrats you won !!!");
                     }
 
 

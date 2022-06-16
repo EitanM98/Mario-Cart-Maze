@@ -2,21 +2,23 @@ package Model;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
-import algorithms.*;
+
+import algorithms.mazeGenerators.AMazeGenerator;
+import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 
 public class MyModel extends Observable implements IModel{
-    private int [][]maze;
-    private int rowChar;
-    private int colChar;
+    private AMazeGenerator mazeGenerator;
+    private Maze maze;
+    private int curRow;
+    private int curCol;
 
 
     public MyModel() {
+        mazeGenerator=new MyMazeGenerator();
         maze = null;
-        rowChar =0;
-        colChar =0;
-
+        curRow =0;
+        curCol =0;
     }
 
     public void updateCharacterLocation(int direction)
@@ -26,40 +28,80 @@ public class MyModel extends Observable implements IModel{
             direction = 2 -> Down
             direction = 3 -> Left
             direction = 4 -> Right
+            direction = 5 -> Up-Left
+            direction = 6 -> Up-Right
+            direction = 7 -> Down-Right
+            direction = 8 -> Down-Left
          */
-
+        int newCol=curCol;
+        int newRow=curRow;
         switch(direction)
         {
             case 1: //Up
-                //if(rowChar!=0)
-                    rowChar--;
+                if(curRow!=0)
+                    newRow=curRow-1;
                 break;
 
             case 2: //Down
-              //  if(rowChar!=maze.length-1)
-                    rowChar++;
+                if(curRow!=maze.getLength()-1)
+                    newRow=curRow+1;
                 break;
             case 3: //Left
-              //  if(colChar!=0)
-                    colChar--;
+                if(curCol!=0)
+                    newCol=curCol-1;
                 break;
             case 4: //Right
-              //  if(colChar!=maze[0].length-1)
-                    colChar++;
+                if(curCol!=maze.getWidth()-1)
+                    newCol=curCol+1;
                 break;
-
+            case 5://Left-top
+                if(curCol!=0 && curRow!=0)
+                    if(maze.getValue(curRow,curCol-1)==0 || maze.getValue(curRow-1,curCol)==0){
+                        newCol=curCol-1;
+                        newRow=curRow-1;
+                }
+                break;
+            case 6://Right-top
+                if(curRow!=0 && curCol!=maze.getWidth()-1)
+                    if(maze.getValue(curRow,curCol+1)==0 || maze.getValue(curRow-1,curCol)==0){
+                        newCol=curCol+1;
+                        newRow=curRow-1;
+                }
+                break;
+            case 7: // Right-bottom
+                if(curRow!=maze.getLength()-1 && curCol!=maze.getWidth()-1)
+                    if(maze.getValue(curRow,curCol+1)==0 || maze.getValue(curRow+1,curCol)==0){
+                        newCol=curCol+1;
+                        newRow=curRow+1;
+                }
+                break;
+            case 8://Left-Bottom
+                if(curCol!=0 && curRow!=maze.getLength()-1 )
+                    if(maze.getValue(curRow,curCol-1)==0 || maze.getValue(curRow+1,curCol)==0){
+                        newCol=curCol-1;
+                        newRow=curRow+1;
+                    }
+                break;
+            default:
+                newCol=curCol;
+                newRow=curRow;
         }
-
-        setChanged();
-        notifyObservers();
+        if((newCol!=curCol || newRow!=curRow)&& maze.getValue(newRow,newCol)==0) // Position changed and Legal move
+            {
+                curRow=newRow;
+                curCol=newCol;
+                setChanged();
+                notifyObservers();
+            }
     }
 
-    public int getRowChar() {
-        return rowChar;
+
+    public int getCurRow() {
+        return curRow;
     }
 
-    public int getColChar() {
-        return colChar;
+    public int getCurCol() {
+        return curCol;
     }
 
     @Override
@@ -68,7 +110,7 @@ public class MyModel extends Observable implements IModel{
     }
 
     @Override
-    public void solveMaze(int[][] maze) {
+    public void solveMaze(Maze maze) {
         //Solving maze
         setChanged();
         notifyObservers();
@@ -82,23 +124,15 @@ public class MyModel extends Observable implements IModel{
 
     public void generateRandomMaze(int row, int col)
     {
-        Random random = new Random();
-        int [][] maze = new int[row][col];
-        for(int i=0;i<maze.length;i++)
-        {
-            for(int j=0;j<maze[0].length;j++)
-            {
-                maze[i][j] = Math.abs(random.nextInt() % 2);
-            }
-        }
-
-        this.maze = maze;
-
+        Maze newMaze=mazeGenerator.generate(row,col);
+        this.maze = newMaze;
+        this.curRow=maze.getStartPosition().getRowIndex();
+        this.curCol=maze.getStartPosition().getColumnIndex();
         setChanged();
         notifyObservers();
     }
 
-    public int[][] getMaze() {
+    public Maze getMaze() {
         return maze;
     }
 }
