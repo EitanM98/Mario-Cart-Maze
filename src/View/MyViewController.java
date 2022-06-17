@@ -31,6 +31,7 @@ public class MyViewController implements Initializable,Observer,IView {
     public Label lbl_player_column;
     StringProperty update_player_position_row = new SimpleStringProperty();
     StringProperty update_player_position_col = new SimpleStringProperty();
+
     private Maze maze;
 
     @Override
@@ -41,6 +42,7 @@ public class MyViewController implements Initializable,Observer,IView {
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
+        viewModel.addObserver(this);
     }
 
 
@@ -48,16 +50,16 @@ public class MyViewController implements Initializable,Observer,IView {
         return update_player_position_row.get();
     }
 
-    public void set_update_player_position_row(String update_player_position_row) {
-        this.update_player_position_row.set(update_player_position_row);
+    public void set_update_player_position_row(int update_player_position_row) {
+        this.update_player_position_row.set(update_player_position_row+"");
     }
 
     public String get_update_player_position_col() {
         return update_player_position_col.get();
     }
 
-    public void set_update_player_position_col(String update_player_position_col) {
-        this.update_player_position_col.set(update_player_position_col);
+    public void set_update_player_position_col(int update_player_position_col) {
+        this.update_player_position_col.set(update_player_position_col+"");
     }
 
 
@@ -79,9 +81,12 @@ public class MyViewController implements Initializable,Observer,IView {
     public void solveMaze()
     {
         viewModel.solveMaze(this.maze);
-
     }
 
+//    public void drawMaze()
+//    {
+//        mazeDisplayer.drawMaze(maze);
+//    }
 
     public void showAlert(String message)
     {
@@ -93,7 +98,7 @@ public class MyViewController implements Initializable,Observer,IView {
 
     public void keyPressed(KeyEvent keyEvent) {
 
-        viewModel.moveCharacter(keyEvent);
+        viewModel.movePlayer(keyEvent);
         keyEvent.consume();
 
     }
@@ -103,54 +108,102 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
 
-    @Override
     public void update(Observable o, Object arg) {
-        if(o instanceof MyViewModel)
-        {
-            if(maze == null)//generateMaze
-            {
-                this.maze = viewModel.getMaze();
-                drawMaze();
-            }
-            else {
-                Maze maze = viewModel.getMaze();
+        if (o instanceof MyViewModel) {
 
-                if (maze == this.maze)//Not generateMaze
-                {
-                    int rowChar = mazeDisplayer.getRow_player();
-                    int colChar = mazeDisplayer.getCol_player();
-                    int rowFromViewModel = viewModel.getCurRow();
-                    int colFromViewModel = viewModel.getCurCol();
+            String event = (String) arg;
+            switch (event) {
 
-                    if(rowFromViewModel == rowChar && colFromViewModel == colChar)//Solve Maze
-                    {
-                        viewModel.getSolution();
-                        showAlert("Solving Maze ... ");
-                    }
-                    else//Update location
-                    {
-                        set_update_player_position_row(rowFromViewModel + "");
-                        set_update_player_position_col(colFromViewModel + "");
-                        this.mazeDisplayer.set_player_position(rowFromViewModel,colFromViewModel);
-                        if(mazeDisplayer.checkIfSolved())
-                            showAlert("Congrats you won !!!");
-                    }
+                case "Maze generated" -> mazeGenerated();
+                case "Player moved" -> playerMoved();
+                case "Maze solved" -> mazeSolved();
+//                case "Invalid step" -> invalidStep();
+//                case "Load maze" -> loadedMaze();
 
-
-                }
-                else//GenerateMaze
-                {
-                    this.maze = maze;
-                    drawMaze();
-                }
             }
         }
     }
 
-    public void drawMaze()
-    {
-        mazeDisplayer.drawMaze(maze);
+    private void mazeGenerated() {
+        mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
+        mazeDisplayer.setGoal(viewModel.getMaze().getGoalPosition());
+        mazeDisplayer.drawMaze(viewModel.getMaze());
+        mazeDisplayer.setSolved(false);
+        mazeDisplayer.setShowSol(false);
+//        playerMoved();
     }
+
+    private void playerMoved() {
+        set_update_player_position_row(viewModel.getCurRow());
+        set_update_player_position_col(viewModel.getCurCol());
+        if(isSolved())
+            playerWon();
+    }
+
+    private void playerWon() {
+        mazeDisplayer.setSolved(true);
+        //add here music and images
+    }
+
+    private void mazeSolved() {
+        mazeDisplayer.setSolution(viewModel.getSolution());
+    }
+
+    private boolean isSolved(){
+        if(viewModel.getCurRow()==maze.getGoalPosition().getRowIndex() && viewModel.getCurCol()==maze.getGoalPosition().getColumnIndex())
+            return true;
+        return false;
+        }
+
+//    @Override
+//    public void update(Observable o, Object arg) {
+//        if(o instanceof MyViewModel)
+//        {
+//            if(maze == null)//generateMaze
+//            {
+//                this.maze = viewModel.getMaze();
+//                drawMaze();
+//            }
+//            else {
+//                Maze maze = viewModel.getMaze();
+//
+//                if (maze == this.maze)//Not generateMaze
+//                {
+//                    int rowChar = mazeDisplayer.getRow_player();
+//                    int colChar = mazeDisplayer.getCol_player();
+//                    int rowFromViewModel = viewModel.getCurRow();
+//                    int colFromViewModel = viewModel.getCurCol();
+//
+//                    if(rowFromViewModel == rowChar && colFromViewModel == colChar)//Solve Maze
+//                    {
+//                        viewModel.getSolution();
+//                        showAlert("Solving Maze ... ");
+//                    }
+//                    else//Update location
+//                    {
+//                        set_update_player_position_row(rowFromViewModel + "");
+//                        set_update_player_position_col(colFromViewModel + "");
+//                        this.mazeDisplayer.set_player_position(rowFromViewModel,colFromViewModel);
+//                        if(mazeDisplayer.checkIfSolved())
+//                            showAlert("Congrats you won !!!");
+//                    }
+//
+//
+//                }
+//                else//GenerateMaze
+//                {
+//                    this.maze = maze;
+//                    drawMaze();
+//                }
+//            }
+//        }
+//    }
+
+
+
+
+
+
 }
 
 

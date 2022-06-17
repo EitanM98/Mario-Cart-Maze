@@ -3,7 +3,9 @@ package ViewModel;
 import Model.IModel;
 import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Pair;
 
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,6 +13,7 @@ public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
     private Maze maze;
+    private LinkedList<Pair<Integer,Integer>> solPath;
     private int curRow;
     private int curCol;
 
@@ -19,6 +22,7 @@ public class MyViewModel extends Observable implements Observer {
         this.model = model;
         this.model.assignObserver(this);
         this.maze = null;
+        this.solPath=null;
     }
 
 
@@ -35,44 +39,57 @@ public class MyViewModel extends Observable implements Observer {
         return curCol;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o instanceof IModel)
-        {
-            if(maze == null)//generateMaze
-            {
-                this.maze = model.getMaze();
-            }
-            else {
-                Maze maze = model.getMaze();
-
-                if (maze == this.maze)//Not generateMaze, Move character
-                {
-                    int rowChar = model.getCurRow();
-                    int colChar = model.getCurCol();
-                    if(this.curCol == colChar && this.curRow == rowChar)//Solve Maze
-                    {
-                        model.getSolution();
-                    }
-                    else//Update location
-                    {
-                        this.curRow = rowChar;
-                        this.curCol = colChar;
-                    }
-
-
-                }
-                else//GenerateMaze
-                {
-                    this.maze = maze;
-                }
-            }
-
-            setChanged();
-            notifyObservers();
-        }
+    public LinkedList<Pair<Integer, Integer>> getSolPath() {
+        return solPath;
     }
 
+
+    //    @Override
+//    public void update(Observable o, Object arg) {
+//        if(o instanceof IModel)
+//        {
+//            if(maze == null)//generateMaze
+//            {
+//                this.maze = model.getMaze();
+//            }
+//            else {
+//                Maze maze = model.getMaze();
+//
+//                if (maze == this.maze)//Not generateMaze, Move character
+//                {
+//                    int rowChar = model.getCurRow();
+//                    int colChar = model.getCurCol();
+//                    if(this.curCol == colChar && this.curRow == rowChar)//Solve Maze
+//                    {
+//                        model.getSolution();
+//                    }
+//                    else//Update location
+//                    {
+//                        this.curRow = rowChar;
+//                        this.curCol = colChar;
+//                    }
+//
+//
+//                }
+//                else//GenerateMaze
+//                {
+//                    this.maze = maze;
+//                }
+//            }
+//
+//            setChanged();
+//            notifyObservers();
+//        }
+//    }
+
+        @Override
+    public void update(Observable o, Object arg) {
+            if(o instanceof IModel)
+            {
+                setChanged();
+                notifyObservers(arg);
+            }
+    }
 
     public void generateMaze(String row_fromUser,String col_fromUser) throws Exception {
         int rows=0;
@@ -92,48 +109,42 @@ public class MyViewModel extends Observable implements Observer {
         this.model.generateRandomMaze(rows,cols);
     }
 
-    public void moveCharacter(KeyEvent keyEvent)
+    public void movePlayer (KeyEvent keyEvent)
     {
-        int direction = -1;
+        int direction = switch (keyEvent.getCode()) {
+            case NUMPAD8, UP -> 1;
+            case NUMPAD2,DOWN -> 2;
+            case NUMPAD4,LEFT -> 3;
+            case NUMPAD6,RIGHT -> 4;
+            case NUMPAD7 -> 5;
+            case NUMPAD9 -> 6;
+            case NUMPAD3 -> 7;
+            case NUMPAD1 -> 8;
+            default -> -1;
+        };
 
-        switch (keyEvent.getCode()){
-            case NUMPAD8:
-                direction = 1;
-                break;
-            case NUMPAD2:
-                direction = 2;
-                break;
-            case NUMPAD4:
-                direction = 3;
-                break;
-            case NUMPAD6:
-                direction = 4;
-                break;
-            case NUMPAD7:
-                direction=5;
-                break;
-            case NUMPAD9:
-                direction=6;
-                break;
-            case NUMPAD3:
-                direction=7;
-                break;
-            case NUMPAD1:
-                direction=8;
-                break;
-
-        }
-
-        model.updateCharacterLocation(direction);
+        model.updatePlayerPosition(direction);
     }
 
     public void solveMaze(Maze maze)
     {
-        model.solveMaze(maze);
+        model.solveMaze();
     }
 
-    public void getSolution()
+    public LinkedList<Pair<Integer,Integer>> getSolution()
     {
-        model.getSolution();
+        return model.getSolution();
     }
+
+//    public void saveMaze() {
+//        this.model.saveMaze();
+//    }
+//
+//    public void loadMaze() {
+//        this.model.loadMaze();
+//    }
+//
+//    public void exitProgram() {
+//        model.exitProgram();
+//    }
 }

@@ -2,7 +2,6 @@ package View;
 
 import Model.IModel;
 import Model.MyModel;
-import View.MyViewController;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,15 +16,20 @@ public class Main extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
         Parent root = fxmlLoader.load();
-        primaryStage.setTitle("The Maze");
+        primaryStage.setTitle("Mario Kart Maze");
         primaryStage.setScene(new Scene(root, 600, 600));
-        primaryStage.show();
 
         IModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         MyViewController view = fxmlLoader.getController();
         view.setViewModel(viewModel);
-        viewModel.addObserver(view);
+        primaryStage.show();
+//        String backgroundImage = getClass().getResource("MarioKart_background.jpg").toExternalForm();
+//        if(backgroundImage!=null){
+//            root.setStyle("-fx-background-image: url('" + backgroundImage + "'); " +
+//                    "-fx-background-position: center center; " +
+//                    "-fx-background-repeat: stretch;");
+//        }
 
     }
 

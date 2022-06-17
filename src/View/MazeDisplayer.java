@@ -2,30 +2,69 @@ package View;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.LinkedList;
 
 public class MazeDisplayer extends Canvas {
 
     private Maze maze;
-
     private int row_player =0;
     private int col_player =0;
     private Position start;
     private Position goal;
+    private boolean isSolved=false;
+    private boolean showSol=false;
+    private LinkedList<Pair<Integer,Integer>> solution;
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameStart = new SimpleStringProperty();
     StringProperty imageFileNameGoal = new SimpleStringProperty();
+
+
+
+    public boolean isSolved() {
+        return isSolved;
+    }
+
+    public void setSolved(boolean solved) {
+        isSolved = solved;
+    }
+
+    public boolean isShowSol() {
+        return showSol;
+    }
+
+    public void setShowSol(boolean showSol) {
+        this.showSol = showSol;
+    }
+
+    public LinkedList<Pair<Integer,Integer>> getSolution() {
+        return solution;
+    }
+
+    public void setStart(Position start) {
+        this.start = start;
+    }
+
+    public void setGoal(Position goal) {
+        this.goal = goal;
+    }
+
+    public void setSolution(LinkedList<Pair<Integer,Integer>> solution) {
+        this.solution = solution;
+    }
 
     public String getImageFileNameStart() {
         return imageFileNameStart.get();
@@ -59,9 +98,6 @@ public class MazeDisplayer extends Canvas {
         this.imageFileNamePlayer.set(imageFileNamePlayer);
     }
 
-
-
-
     public int getRow_player() {
         return row_player;
     }
@@ -76,13 +112,6 @@ public class MazeDisplayer extends Canvas {
         draw();
 
     }
-
-    public boolean checkIfSolved(){
-        if(row_player==goal.getRowIndex() && col_player==goal.getColumnIndex())
-            return true;
-        return false;
-    }
-
 
 
     public void drawMaze(Maze maze)
