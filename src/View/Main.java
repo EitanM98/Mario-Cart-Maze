@@ -24,12 +24,7 @@ public class Main extends Application {
         MyViewController view = fxmlLoader.getController();
         view.setViewModel(viewModel);
         primaryStage.show();
-//        String backgroundImage = getClass().getResource("MarioKart_background.jpg").toExternalForm();
-//        if(backgroundImage!=null){
-//            root.setStyle("-fx-background-image: url('" + backgroundImage + "'); " +
-//                    "-fx-background-position: center center; " +
-//                    "-fx-background-repeat: stretch;");
-//        }
+
 
     }
 

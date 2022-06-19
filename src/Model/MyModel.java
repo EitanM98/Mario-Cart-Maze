@@ -7,11 +7,8 @@ import java.util.*;
 
 import algorithms.search.AState;
 import algorithms.search.MazeState;
-import javafx.util.Pair;
 import Server.Server;
-import algorithms.mazeGenerators.AMazeGenerator;
 import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import Server.*;
@@ -35,8 +32,8 @@ public class MyModel extends Observable implements IModel{
         curCol =0;
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401,1000, new ServerStrategySolveSearchProblem());
-        solveSearchProblemServer.start();
-        mazeGeneratingServer.start();
+//        solveSearchProblemServer.start();
+//        mazeGeneratingServer.start();
     }
 
     public int getCurRow() {
@@ -69,17 +66,19 @@ public class MyModel extends Observable implements IModel{
     }
 
 
+    /**
+     * each row in the array is [row_number,col_number] of each step in the solution path
+     * @return maze solution as 2 dimensional array
+     */
     @Override
-    public LinkedList<Pair<Integer,Integer>> getSolution() {
+    public int[][] getSolution() {
         ArrayList<AState> mazeSolution = solution.getSolutionPath();
-        LinkedList<Pair<Integer,Integer>> solutionPath=new LinkedList<>();
+        int[][] solutionPath=new int[mazeSolution.size()][2];
         for (int i = 0; i < mazeSolution.size(); i++) {
             AState state=mazeSolution.get(i);
             if(state instanceof MazeState){
-                Integer row=(((MazeState) state).getPosition().getRowIndex());
-                Integer col=(((MazeState) state).getPosition().getColumnIndex());
-                Pair <Integer,Integer> position=new Pair(row,col);
-                solutionPath.add(position);
+                solutionPath[i][0]=((MazeState) state).getPosition().getRowIndex();
+                solutionPath[i][1]=((MazeState) state).getPosition().getColumnIndex();
             }
         }
         return solutionPath;
@@ -96,7 +95,9 @@ public class MyModel extends Observable implements IModel{
 
     public void generateRandomMaze(int rows, int cols)
     {
+        mazeGeneratingServer.start();
         try {
+
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
@@ -117,6 +118,9 @@ public class MyModel extends Observable implements IModel{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    finally {
+                        mazeGeneratingServer.stop();
+                    }
                 }
             });
             client.communicateWithServer();
@@ -125,7 +129,7 @@ public class MyModel extends Observable implements IModel{
             e.printStackTrace();
         }
         setChanged();
-        notifyObservers("maze generated");
+        notifyObservers("Maze generated");
     }
 
     public void updatePlayerPosition(int direction)
@@ -202,13 +206,14 @@ public class MyModel extends Observable implements IModel{
         }
         else{
             setChanged();
-            notifyObservers("Illegal move");
+            notifyObservers("Invalid move");
         }
     }
 
     @Override
     public void solveMaze() {
         if (this.maze != null) {
+            solveSearchProblemServer.start();
             try {
                 Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
                     public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -219,9 +224,11 @@ public class MyModel extends Observable implements IModel{
                             toServer.writeObject(maze);
                             toServer.flush();
                             solution = (Solution) fromServer.readObject();
-                            System.out.println(String.format("Solution steps: %s", solution));
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }
+                        finally {
+                            solveSearchProblemServer.stop();
                         }
                     }
                 });
@@ -233,11 +240,5 @@ public class MyModel extends Observable implements IModel{
             notifyObservers("Maze solved");
         }
     }
-
-
-
-
-
-
 
 }

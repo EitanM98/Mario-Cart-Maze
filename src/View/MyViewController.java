@@ -1,23 +1,29 @@
 package View;
 
 import ViewModel.MyViewModel;
-import algorithms.mazeGenerators.Maze;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MyViewController implements Initializable,Observer,IView {
+
     private MyViewModel viewModel;
     @FXML
     public TextField textField_mazeRows;
@@ -29,15 +35,32 @@ public class MyViewController implements Initializable,Observer,IView {
     public Label lbl_player_row;
     @FXML
     public Label lbl_player_column;
+    @FXML
+    public Label lbl_Invalid_move;
+    @FXML
+    public Button btn_newGame=new Button();
+    @FXML
+    public Button btn_showSolution=new Button();
+    @FXML
+    public Button btn_giveHint=new Button();
     StringProperty update_player_position_row = new SimpleStringProperty();
     StringProperty update_player_position_col = new SimpleStringProperty();
+    int hint_index =1;
 
-    private Maze maze;
+    public int getHint_index() {
+        return hint_index;
+    }
+
+
+
+    public void setHint_index(int hint_index) {
+        this.hint_index = hint_index;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        lbl_player_row.textProperty().bind(update_player_position_row);
-        lbl_player_column.textProperty().bind(update_player_position_col);
+//        lbl_player_row.textProperty().bind(update_player_position_row);
+//        lbl_player_column.textProperty().bind(update_player_position_col);
     }
 
     public void setViewModel(MyViewModel viewModel) {
@@ -45,48 +68,48 @@ public class MyViewController implements Initializable,Observer,IView {
         viewModel.addObserver(this);
     }
 
-
-    public String get_update_player_position_row() {
-        return update_player_position_row.get();
+    public MyViewModel getViewModel() {
+        return viewModel;
     }
 
-    public void set_update_player_position_row(int update_player_position_row) {
-        this.update_player_position_row.set(update_player_position_row+"");
-    }
-
-    public String get_update_player_position_col() {
-        return update_player_position_col.get();
-    }
-
-    public void set_update_player_position_col(int update_player_position_col) {
-        this.update_player_position_col.set(update_player_position_col+"");
-    }
+    //    public String get_update_player_position_row() {
+//        return update_player_position_row.get();
+//    }
+//
+//    public void set_update_player_position_row(int update_player_position_row) {
+//        this.update_player_position_row.set(update_player_position_row+"");
+//    }
+//
+//    public String get_update_player_position_col() {
+//        return update_player_position_col.get();
+//    }
+//
+//    public void set_update_player_position_col(int update_player_position_col) {
+//        this.update_player_position_col.set(update_player_position_col+"");
+//    }
 
 
 
     public void generateMaze()
     {
+        Parent root;
         try {
-            viewModel.generateMaze(textField_mazeRows.getText(),textField_mazeColumns.getText());
-//            set_update_player_position_col(viewModel.getCurCol()+"");
-//            set_update_player_position_row(viewModel.getCurRow()+"");
-//            this.mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
-        } catch (Exception e) {//Wrong parameters
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(e.getMessage());;
-            alert.show();
+            disableButtons(true);
+            FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/GenerateMaze.fxml").toURI().toURL());
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Generate Maze");
+            stage.setScene(new Scene(root, 450, 450));
+            GenerateMazeController view = fxmlLoader.getController();
+            view.setViewModel(viewModel);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void solveMaze()
-    {
-        viewModel.solveMaze(this.maze);
-    }
 
-//    public void drawMaze()
-//    {
-//        mazeDisplayer.drawMaze(maze);
-//    }
 
     public void showAlert(String message)
     {
@@ -117,11 +140,24 @@ public class MyViewController implements Initializable,Observer,IView {
                 case "Maze generated" -> mazeGenerated();
                 case "Player moved" -> playerMoved();
                 case "Maze solved" -> mazeSolved();
-//                case "Invalid step" -> invalidStep();
+                case "Invalid move" -> invalidMove();
 //                case "Load maze" -> loadedMaze();
-
             }
         }
+    }
+
+    private void invalidMove() {
+        Runnable task=()->{
+            lbl_Invalid_move.setVisible(true);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lbl_Invalid_move.setVisible(false);
+        };
+        new Thread(task).start();
+
     }
 
     private void mazeGenerated() {
@@ -130,80 +166,79 @@ public class MyViewController implements Initializable,Observer,IView {
         mazeDisplayer.drawMaze(viewModel.getMaze());
         mazeDisplayer.setSolved(false);
         mazeDisplayer.setShowSol(false);
+        disableButtons(false);
+        hint_index =1;
+        mazeDisplayer.requestFocus();
 //        playerMoved();
     }
 
+    private void disableButtons(boolean bool) {
+        btn_newGame.disableProperty().setValue(bool);
+        btn_giveHint.disableProperty().setValue(bool);
+        btn_showSolution.disableProperty().setValue(bool);
+    }
+
+
+
     private void playerMoved() {
-        set_update_player_position_row(viewModel.getCurRow());
-        set_update_player_position_col(viewModel.getCurCol());
-        if(isSolved())
+//        set_update_player_position_row(viewModel.getCurRow());
+//        set_update_player_position_col(viewModel.getCurCol());
+        mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
+        if(viewModel.isSolved())
             playerWon();
     }
 
     private void playerWon() {
         mazeDisplayer.setSolved(true);
+        showAlert("Congrats you won");
         //add here music and images
     }
 
     private void mazeSolved() {
         mazeDisplayer.setSolution(viewModel.getSolution());
+        mazeDisplayer.requestFocus();
+//        solutionIndex=viewModel.getSolution().length;
     }
 
-    private boolean isSolved(){
-        if(viewModel.getCurRow()==maze.getGoalPosition().getRowIndex() && viewModel.getCurCol()==maze.getGoalPosition().getColumnIndex())
-            return true;
-        return false;
+    public void showHideSolution()
+    {
+        if(viewModel.getSolPath()==null) {  //First use of hide or show soloution =Solve and Show Solution
+            this.viewModel.solveMaze();
+            hint_index =mazeDisplayer.getSolution().length;
+            mazeDisplayer.showSolution();
         }
+        else if(mazeDisplayer.isShowSol()) {     //Hide
+            hint_index =1;
+            mazeDisplayer.hideSolution();
+        }
+        else{ //Show solution
+            hint_index =mazeDisplayer.getSolution().length;
+            mazeDisplayer.showSolution();
+        }
+        mazeDisplayer.requestFocus();
+    }
 
-//    @Override
-//    public void update(Observable o, Object arg) {
-//        if(o instanceof MyViewModel)
-//        {
-//            if(maze == null)//generateMaze
-//            {
-//                this.maze = viewModel.getMaze();
-//                drawMaze();
-//            }
-//            else {
-//                Maze maze = viewModel.getMaze();
-//
-//                if (maze == this.maze)//Not generateMaze
-//                {
-//                    int rowChar = mazeDisplayer.getRow_player();
-//                    int colChar = mazeDisplayer.getCol_player();
-//                    int rowFromViewModel = viewModel.getCurRow();
-//                    int colFromViewModel = viewModel.getCurCol();
-//
-//                    if(rowFromViewModel == rowChar && colFromViewModel == colChar)//Solve Maze
-//                    {
-//                        viewModel.getSolution();
-//                        showAlert("Solving Maze ... ");
-//                    }
-//                    else//Update location
-//                    {
-//                        set_update_player_position_row(rowFromViewModel + "");
-//                        set_update_player_position_col(colFromViewModel + "");
-//                        this.mazeDisplayer.set_player_position(rowFromViewModel,colFromViewModel);
-//                        if(mazeDisplayer.checkIfSolved())
-//                            showAlert("Congrats you won !!!");
-//                    }
-//
-//
-//                }
-//                else//GenerateMaze
-//                {
-//                    this.maze = maze;
-//                    drawMaze();
-//                }
-//            }
-//        }
-//    }
+    public void giveAHint(){
+        if(!mazeDisplayer.isShowSol()){ //Solution isn't shown already
+            if(mazeDisplayer.getSolution()==null){ //Not solved yet
+                this.viewModel.solveMaze();
+                hint_index =1;
+            }
+            mazeDisplayer.requestHint(hint_index);
+            hint_index++;
+        }
+        mazeDisplayer.requestFocus();
+    }
 
-
-
-
-
-
+    public void exitGame(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to exit?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            if (viewModel != null) {
+                System.exit(0);
+            }
+        }
+    }
 }
 
 

@@ -2,20 +2,15 @@ package View;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
-import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.LinkedList;
 
 public class MazeDisplayer extends Canvas {
 
@@ -26,13 +21,20 @@ public class MazeDisplayer extends Canvas {
     private Position goal;
     private boolean isSolved=false;
     private boolean showSol=false;
-    private LinkedList<Pair<Integer,Integer>> solution;
+    private int[][] solution;
+    private boolean hintRequested;
+    private int hint_index;
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameStart = new SimpleStringProperty();
     StringProperty imageFileNameGoal = new SimpleStringProperty();
+    StringProperty imageFileNameSoloutionStep = new SimpleStringProperty("src/resources/Images/Banana.png");
+//    StringProperty imageFileNameRoad=new SimpleStringProperty("src/resources/Images/asphalt.jpg");
 
 
+    public boolean isHintRequested() {
+        return hintRequested;
+    }
 
     public boolean isSolved() {
         return isSolved;
@@ -50,7 +52,7 @@ public class MazeDisplayer extends Canvas {
         this.showSol = showSol;
     }
 
-    public LinkedList<Pair<Integer,Integer>> getSolution() {
+    public int[][] getSolution() {
         return solution;
     }
 
@@ -62,9 +64,24 @@ public class MazeDisplayer extends Canvas {
         this.goal = goal;
     }
 
-    public void setSolution(LinkedList<Pair<Integer,Integer>> solution) {
+    public void setSolution(int[][] solution) {
         this.solution = solution;
+//        this.setShowSol(true);
+//        draw();
     }
+
+    public void hideSolution() {
+        this.setShowSol(false);
+        this.hintRequested=false;
+        draw();
+    }
+
+    public void showSolution() {
+        this.setShowSol(true);
+        this.hintRequested=false;
+        draw();
+    }
+
 
     public String getImageFileNameStart() {
         return imageFileNameStart.get();
@@ -76,6 +93,19 @@ public class MazeDisplayer extends Canvas {
 
     public String getImageFileNameGoal() {
         return imageFileNameGoal.get();
+    }
+
+//    public String getImageFileNameRoad() {
+//        return imageFileNameRoad.get();
+//    }
+
+
+    public String getImageFileNameSoloutionStep() {
+        return imageFileNameSoloutionStep.get();
+    }
+
+    public StringProperty imageFileNameSoloutionStepProperty() {
+        return imageFileNameSoloutionStep;
     }
 
     public void setImageFileNameGoal(String imageFileNameGoal) {
@@ -113,6 +143,15 @@ public class MazeDisplayer extends Canvas {
 
     }
 
+    public void requestHint(int cur_hint) {
+        if(cur_hint>0 && cur_hint<solution.length-1){
+            this.hintRequested = true;
+            hint_index=cur_hint;
+            draw();
+        }
+        this.hintRequested = false;
+    }
+
 
     public void drawMaze(Maze maze)
     {
@@ -139,44 +178,31 @@ public class MazeDisplayer extends Canvas {
             GraphicsContext graphicsContext = getGraphicsContext2D();
             graphicsContext.clearRect(0,0,canvasWidth,canvasHeight);
             drawStartEnd(graphicsContext,cellHeight,cellWidth);
-            graphicsContext.setFill(Color.RED);
-            double w,h;
-            //Draw Maze
-            Image wallImage = null;
-            try {
-                wallImage = new Image(new FileInputStream(getImageFileNameWall()));
-            } catch (FileNotFoundException e) {
-                System.out.println("There is no file....");
-            }
-            int[][] mazeGrid=maze.getMaze();
-            for(int i=0;i<row;i++)
-            {
-                for(int j=0;j<col;j++)
-                {
-                    if(mazeGrid[i][j] == 1) // Wall
-                    {
-                        h = i * cellHeight;
-                        w = j * cellWidth;
-                        if (wallImage == null){
-                            graphicsContext.fillRect(w,h,cellWidth,cellHeight);
-                        }else{
-                            graphicsContext.drawImage(wallImage,w,h,cellWidth,cellHeight);
-                        }
-                    }
+            graphicsContext.setFill(Color.BROWN);
+            drawWalls(graphicsContext,cellHeight,cellWidth);
+            if(isShowSol())
+                drawSolution(graphicsContext,cellHeight,cellWidth,solution.length-1); //Give all the solution
+            else if(isHintRequested())
+                drawSolution(graphicsContext,cellHeight,cellWidth,hint_index+1); //Give hint till hint_index
+            drawPlayer(graphicsContext,cellHeight,cellWidth);
 
+        }
+    }
+
+
+    private void drawSolution(GraphicsContext graphicsContext,double cellHeight,double cellWidth,int last_step_index) {
+        if(solution!=null){
+            for(int i=1;i<last_step_index;i++){ //Exclude start and goal positions
+                double h = solution[i][0] * cellHeight;
+                double w = solution[i][1] * cellWidth;
+                Image solutionStepImage = null;
+                try {
+                    solutionStepImage = new Image(new FileInputStream(getImageFileNameSoloutionStep()));
+                } catch (FileNotFoundException e) {
+                    System.out.println("There is no Image solution step....");
                 }
+                graphicsContext.drawImage(solutionStepImage,w,h,cellWidth,cellHeight);
             }
-
-            double h_player = getRow_player() * cellHeight;
-            double w_player = getCol_player() * cellWidth;
-            Image playerImage = null;
-            try {
-                playerImage = new Image(new FileInputStream(getImageFileNamePlayer()));
-            } catch (FileNotFoundException e) {
-                System.out.println("There is no Image player....");
-            }
-            graphicsContext.drawImage(playerImage,w_player,h_player,cellWidth,cellHeight);
-
         }
     }
 
@@ -201,4 +227,47 @@ public class MazeDisplayer extends Canvas {
                     goal.getRowIndex() * cellHeight, cellWidth, cellHeight);
         }
     }
+
+    private void drawWalls(GraphicsContext graphicsContext,double cellHeight,double cellWidth){
+        double w,h;
+        //Draw Maze
+        Image wallImage = null;
+        try {
+            wallImage = new Image(new FileInputStream(getImageFileNameWall()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no file....");
+        }
+        int[][] mazeGrid=maze.getMaze();
+        for(int i=0;i<maze.getLength();i++)
+        {
+            for(int j=0;j<maze.getWidth();j++)
+            {
+                h = i * cellHeight;
+                w = j * cellWidth;
+                if(mazeGrid[i][j] == 1) // Wall
+                {
+                    if (wallImage == null){
+                        graphicsContext.fillRect(w,h,cellWidth,cellHeight);
+                    }else{
+                        graphicsContext.drawImage(wallImage,w,h,cellWidth,cellHeight);
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void drawPlayer(GraphicsContext graphicsContext,double cellHeight,double cellWidth){
+        double h_player = getRow_player() * cellHeight;
+        double w_player = getCol_player() * cellWidth;
+        Image playerImage = null;
+        try {
+            playerImage = new Image(new FileInputStream(getImageFileNamePlayer()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no Image player....");
+        }
+        graphicsContext.drawImage(playerImage,w_player,h_player,cellWidth,cellHeight);
+    }
+
+
 }

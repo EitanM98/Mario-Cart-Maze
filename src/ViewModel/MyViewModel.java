@@ -13,10 +13,9 @@ public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
     private Maze maze;
-    private LinkedList<Pair<Integer,Integer>> solPath;
+    private int[][] solPath;
     private int curRow;
     private int curCol;
-
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -39,56 +38,57 @@ public class MyViewModel extends Observable implements Observer {
         return curCol;
     }
 
-    public LinkedList<Pair<Integer, Integer>> getSolPath() {
+    public int[][] getSolPath() {
         return solPath;
     }
 
+    public void setMaze(Maze maze) {
+        this.maze = maze;
+    }
 
-    //    @Override
-//    public void update(Observable o, Object arg) {
-//        if(o instanceof IModel)
-//        {
-//            if(maze == null)//generateMaze
-//            {
-//                this.maze = model.getMaze();
-//            }
-//            else {
-//                Maze maze = model.getMaze();
-//
-//                if (maze == this.maze)//Not generateMaze, Move character
-//                {
-//                    int rowChar = model.getCurRow();
-//                    int colChar = model.getCurCol();
-//                    if(this.curCol == colChar && this.curRow == rowChar)//Solve Maze
-//                    {
-//                        model.getSolution();
-//                    }
-//                    else//Update location
-//                    {
-//                        this.curRow = rowChar;
-//                        this.curCol = colChar;
-//                    }
-//
-//
-//                }
-//                else//GenerateMaze
-//                {
-//                    this.maze = maze;
-//                }
-//            }
-//
-//            setChanged();
-//            notifyObservers();
-//        }
-//    }
+    public void setCurPosition(int curRow,int curCol) {
+        this.curRow = curRow;
+        this.curCol=curCol;
+    }
 
-        @Override
+    public void setSolPath(int[][] solPath) {
+        this.solPath = solPath;
+    }
+
+    @Override
     public void update(Observable o, Object arg) {
-            if(o instanceof IModel)
-            {
+            if(o instanceof IModel) {
+                String event = (String) arg;
+                switch (event) {
+                    case "Maze generated" -> mazeGenerated();
+                    case "Player moved" -> playerMoved();
+                    case "Maze solved" -> mazeSolved();
+//                  case "Invalid move" -> invalidMove();
+//                  case "Load maze" -> loadedMaze();
+                }
                 setChanged();
-                notifyObservers(arg);
+                notifyObservers(event);
             }
+    }
+
+
+    private void mazeGenerated() {
+        this.maze=model.getMaze();
+        this.setCurPosition(maze.getStartPosition().getRowIndex(),maze.getStartPosition().getColumnIndex());
+    }
+
+
+    private void mazeSolved() {
+        this.setSolPath(model.getSolution());
+    }
+
+    private void playerMoved() {
+        this.setCurPosition(model.getCurRow(), model.getCurCol());
+    }
+
+    public boolean isSolved(){
+        return this.getCurRow() == maze.getGoalPosition().getRowIndex() &&
+                this.getCurCol() == maze.getGoalPosition().getColumnIndex();
     }
 
     public void generateMaze(String row_fromUser,String col_fromUser) throws Exception {
@@ -126,15 +126,16 @@ public class MyViewModel extends Observable implements Observer {
         model.updatePlayerPosition(direction);
     }
 
-    public void solveMaze(Maze maze)
+    public void solveMaze()
     {
         model.solveMaze();
     }
 
-    public LinkedList<Pair<Integer,Integer>> getSolution()
+    public int[][] getSolution()
     {
         return model.getSolution();
     }
+
 
 //    public void saveMaze() {
 //        this.model.saveMaze();
@@ -142,9 +143,5 @@ public class MyViewModel extends Observable implements Observer {
 //
 //    public void loadMaze() {
 //        this.model.loadMaze();
-//    }
-//
-//    public void exitProgram() {
-//        model.exitProgram();
 //    }
 }

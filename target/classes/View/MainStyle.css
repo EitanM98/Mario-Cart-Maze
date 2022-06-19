@@ -19,3 +19,10 @@ Button:hover{
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
 }
+
+#generateMaze_background{
+    -fx-background-image: url('../../src/resources/Images/letsPlay.jpg');
+    /*-fx-background-repeat: fit;*/
+    /*width: 293px;*/
+    /*height: 115px;*/
+}

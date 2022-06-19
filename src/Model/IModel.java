@@ -19,5 +19,5 @@ public interface IModel {
     public int getGoalCol();
     public void assignObserver(Observer o);
     public void solveMaze();
-    public LinkedList<Pair<Integer,Integer>> getSolution();
+    public int[][] getSolution();
 }
