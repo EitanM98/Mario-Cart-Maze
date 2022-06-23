@@ -35,8 +35,8 @@ public class GenerateMazeController implements Initializable,IView{
                 "Easy","Medium","Hard"
         );
         comboBox_difficulty.setPromptText("Please select one");
-        radioBtnRand.setSelected(true);
-        radioBtnCustom.setSelected(false);
+        radioBtnRand.setSelected(false);
+        radioBtnCustom.setSelected(true);
     }
 
     public void setViewModel(MyViewModel viewModel) {
@@ -74,12 +74,17 @@ public class GenerateMazeController implements Initializable,IView{
                 }
                 viewModel.generateMaze(level,level);
             }
-            Stage stage = (Stage) btnGenerateMaze.getScene().getWindow();
-            stage.close();
+            closeWindow();
         } catch (Exception e) {//Wrong parameters
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setContentText(e.getMessage());;
             alert.show();
         }
+    }
+
+    public void closeWindow(){
+        Stage stage = (Stage) btnGenerateMaze.getScene().getWindow();
+        stage.close();
+        MyViewController.setNewMazeController(null);
     }
 }

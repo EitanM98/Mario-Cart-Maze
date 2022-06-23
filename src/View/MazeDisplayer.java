@@ -19,7 +19,7 @@ public class MazeDisplayer extends Canvas {
     private int col_player =0;
     private Position start;
     private Position goal;
-    private boolean isSolved=false;
+//    private boolean isSolved=false;
     private boolean showSol=false;
     private int[][] solution;
     private boolean hintRequested;
@@ -36,13 +36,13 @@ public class MazeDisplayer extends Canvas {
         return hintRequested;
     }
 
-    public boolean isSolved() {
-        return isSolved;
-    }
+//    public boolean isSolved() {
+//        return isSolved;
+//    }
 
-    public void setSolved(boolean solved) {
-        isSolved = solved;
-    }
+//    public void setSolved(boolean solved) {
+//        isSolved = solved;
+//    }
 
     public boolean isShowSol() {
         return showSol;

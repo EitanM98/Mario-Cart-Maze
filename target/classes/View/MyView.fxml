@@ -20,6 +20,7 @@
 
 <?import View.*?>
 <!--<?import View.*?>-->
+
 <BorderPane maxHeight="1.7976931348623157E308" onMouseClicked="#mouseClicked" prefHeight="407.0" prefWidth="687.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="163.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
@@ -41,20 +42,18 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <TextField fx:id="textField_mazeRows" text="10" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     <TextField fx:id="textField_mazeColumns" text="10" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     <Button fx:id="btn_newGame" onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="New Game" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-               <Button fx:id="btn_preferences" prefHeight="25.0" prefWidth="167.0" text="Preferences" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                    <Button fx:id="btn_showSolution" cancelButton="true" disable="true" onAction="#showHideSolution" prefHeight="25.0" prefWidth="167.0" text="Show/ Hide Solution" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-               <Button fx:id="btn_giveHint" disable="true" mnemonicParsing="false" onAction="#giveAHint" prefHeight="25.0" prefWidth="167.0" text="Give Me A Hint" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                    <Button fx:id="btn_showSolution" cancelButton="true" disable="true" onAction="#showHideSolution" prefHeight="25.0" prefWidth="167.0" text="Show/ Hide Solution" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+               <Button fx:id="btn_giveHint" disable="true" mnemonicParsing="false" onAction="#giveAHint" prefHeight="25.0" prefWidth="167.0" text="Give Me A Hint" GridPane.columnSpan="2" GridPane.rowIndex="7" />
                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
                   <image>
                      <Image url="@../resources/Images/Mario.jpg" />
                   </image>
                </ImageView>
-               <Button fx:id="btn_exitGame" onAction="#exitGame" mnemonicParsing="false" prefHeight="23.0" prefWidth="117.0" text="Exit Game" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+               <Button fx:id="btn_exitGame" mnemonicParsing="false" onAction="#exitGameAlert" prefHeight="23.0" prefWidth="117.0" text="Exit Game" GridPane.columnSpan="2" GridPane.rowIndex="9" />
                 </GridPane>
             </children>
             <padding>
@@ -76,19 +75,27 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem fx:id="menu_NewMaze" mnemonicParsing="false" text="New Maze" onAction="#generateMaze" />
+                                <MenuItem fx:id="menu_LoadMaze" onAction="#loadMaze" mnemonicParsing="false" text="Load Maze" />
+                        <MenuItem fx:id="menu_SaveMaze" onAction="#saveMaze" mnemonicParsing="false" text="Save Maze" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
-                            </items>
-                        </Menu>
+                  <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Preferences" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="How to play" onAction="#openHelp" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="About">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="About us" onAction="#openAbout"/>
+                        <MenuItem mnemonicParsing="false" text="Mario Kart" onAction="#openMarioKartLink" />
+                    </items>
+                  </Menu>
                     </menus>
                 </MenuBar>
             </children>
@@ -97,7 +104,7 @@
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <center>
-              <Pane prefHeight="345.0" prefWidth="1450.0" style="-fx-border-insets: inset; -fx-border-color: Black; -fx-border-width: 1.5px;" BorderPane.alignment="CENTER">
+              <Pane fx:id="mazeDisplayerPane" prefHeight="345.0" prefWidth="1450.0" BorderPane.alignment="CENTER">
                   <children>
                       <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNameGoal="src/resources/Images/goal-position.jpg" imageFileNamePlayer="src/resources/Images/Mario.png" imageFileNameStart="src/resources/Images/Start-position.jpg" imageFileNameWall="./src/resources/Images/WaterWall.jpg" onKeyPressed="#keyPressed" width="400.0" />
                   </children>

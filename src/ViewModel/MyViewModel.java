@@ -1,6 +1,7 @@
 package ViewModel;
 
 import Model.IModel;
+import View.MyViewController;
 import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Pair;
@@ -60,11 +61,11 @@ public class MyViewModel extends Observable implements Observer {
             if(o instanceof IModel) {
                 String event = (String) arg;
                 switch (event) {
-                    case "Maze generated" -> mazeGenerated();
+                    case "Maze generated" , "Maze loaded" -> mazeGenerated();
                     case "Player moved" -> playerMoved();
                     case "Maze solved" -> mazeSolved();
 //                  case "Invalid move" -> invalidMove();
-//                  case "Load maze" -> loadedMaze();
+//                  case "Load maze" -> mazeLoaded();
                 }
                 setChanged();
                 notifyObservers(event);
@@ -75,6 +76,7 @@ public class MyViewModel extends Observable implements Observer {
     private void mazeGenerated() {
         this.maze=model.getMaze();
         this.setCurPosition(maze.getStartPosition().getRowIndex(),maze.getStartPosition().getColumnIndex());
+        this.model.solveMaze();
     }
 
 
@@ -84,6 +86,16 @@ public class MyViewModel extends Observable implements Observer {
 
     private void playerMoved() {
         this.setCurPosition(model.getCurRow(), model.getCurCol());
+    }
+
+    public void checkIfWon(){
+        if(isSolved())
+            playerWon();
+    }
+
+    private void playerWon() {
+        MyViewController.showInfoAlert("Congrats you won", "Winner");
+        //add here music and images
     }
 
     public boolean isSolved(){
@@ -136,12 +148,18 @@ public class MyViewModel extends Observable implements Observer {
         return model.getSolution();
     }
 
+    public void loadMaze() {
+        model.loadMaze();
+    }
 
-//    public void saveMaze() {
-//        this.model.saveMaze();
-//    }
-//
-//    public void loadMaze() {
-//        this.model.loadMaze();
-//    }
+    public void saveMaze() {
+        if(maze==null)
+            MyViewController.showErrorAlert("Maze is empty\n Please generate a maze first ","Saving Error");
+        else
+            model.saveMaze();
+    }
+
+    public void exitGame() {
+        model.exitGame();
+    }
 }

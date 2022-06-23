@@ -1,6 +1,7 @@
 package View;
 
 import ViewModel.MyViewModel;
+import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -24,6 +25,8 @@ import java.util.ResourceBundle;
 
 public class MyViewController implements Initializable,Observer,IView {
 
+
+
     private MyViewModel viewModel;
     @FXML
     public TextField textField_mazeRows;
@@ -46,12 +49,31 @@ public class MyViewController implements Initializable,Observer,IView {
     StringProperty update_player_position_row = new SimpleStringProperty();
     StringProperty update_player_position_col = new SimpleStringProperty();
     int hint_index =1;
+    private HostServices hostServices ;
+    //Controllers
+    private static About aboutController;
+    private static GenerateMazeController newMazeController;
+    private static Help helpController;
+
+    public static void setHelpController(Help helpController) {
+        MyViewController.helpController = helpController;
+    }
+
+    public static void setNewMazeController(GenerateMazeController newMazeController) {
+        MyViewController.newMazeController = newMazeController;
+    }
+
+    public static void setAboutController(About aboutController) {
+        MyViewController.aboutController = aboutController;
+    }
 
     public int getHint_index() {
         return hint_index;
     }
 
-
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
 
     public void setHint_index(int hint_index) {
         this.hint_index = hint_index;
@@ -72,49 +94,45 @@ public class MyViewController implements Initializable,Observer,IView {
         return viewModel;
     }
 
-    //    public String get_update_player_position_row() {
-//        return update_player_position_row.get();
-//    }
-//
-//    public void set_update_player_position_row(int update_player_position_row) {
-//        this.update_player_position_row.set(update_player_position_row+"");
-//    }
-//
-//    public String get_update_player_position_col() {
-//        return update_player_position_col.get();
-//    }
-//
-//    public void set_update_player_position_col(int update_player_position_col) {
-//        this.update_player_position_col.set(update_player_position_col+"");
-//    }
 
-
-
-    public void generateMaze()
-    {
-        Parent root;
-        try {
-            disableButtons(true);
-            FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/GenerateMaze.fxml").toURI().toURL());
-            root = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Generate Maze");
-            stage.setScene(new Scene(root, 450, 450));
-            GenerateMazeController view = fxmlLoader.getController();
-            view.setViewModel(viewModel);
-            stage.show();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+    public void generateMaze() {
+        if (MyViewController.newMazeController == null) {
+            Parent root;
+            try {
+                disableButtons(true);
+                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/GenerateMaze.fxml").toURI().toURL());
+                root = fxmlLoader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Generate Maze");
+                stage.setScene(new Scene(root, 450, 450));
+                GenerateMazeController view = fxmlLoader.getController();
+                MyViewController.setNewMazeController(view);
+                view.setViewModel(viewModel);
+                stage.setOnCloseRequest(event -> {
+                    disableButtons(false);
+                    view.closeWindow();
+                });
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
-
-    public void showAlert(String message)
+    public static void showInfoAlert(String message,String title)
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
+        alert.setTitle(title);
+        alert.show();
+    }
+
+    public static void showErrorAlert(String message,String title)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
+        alert.setTitle(title);
         alert.show();
     }
 
@@ -137,14 +155,15 @@ public class MyViewController implements Initializable,Observer,IView {
             String event = (String) arg;
             switch (event) {
 
-                case "Maze generated" -> mazeGenerated();
-                case "Player moved" -> playerMoved();
+                case "Maze generated", "Maze loaded" -> mazeGenerated();
                 case "Maze solved" -> mazeSolved();
+                case "Player moved" -> playerMoved();
                 case "Invalid move" -> invalidMove();
-//                case "Load maze" -> loadedMaze();
             }
         }
     }
+
+
 
     private void invalidMove() {
         Runnable task=()->{
@@ -164,7 +183,6 @@ public class MyViewController implements Initializable,Observer,IView {
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
         mazeDisplayer.setGoal(viewModel.getMaze().getGoalPosition());
         mazeDisplayer.drawMaze(viewModel.getMaze());
-        mazeDisplayer.setSolved(false);
         mazeDisplayer.setShowSol(false);
         disableButtons(false);
         hint_index =1;
@@ -181,18 +199,10 @@ public class MyViewController implements Initializable,Observer,IView {
 
 
     private void playerMoved() {
-//        set_update_player_position_row(viewModel.getCurRow());
-//        set_update_player_position_col(viewModel.getCurCol());
         mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
-        if(viewModel.isSolved())
-            playerWon();
+        viewModel.checkIfWon();
     }
 
-    private void playerWon() {
-        mazeDisplayer.setSolved(true);
-        showAlert("Congrats you won");
-        //add here music and images
-    }
 
     private void mazeSolved() {
         mazeDisplayer.setSolution(viewModel.getSolution());
@@ -230,12 +240,79 @@ public class MyViewController implements Initializable,Observer,IView {
         mazeDisplayer.requestFocus();
     }
 
-    public void exitGame(ActionEvent actionEvent) {
+//    private void playSound(){
+//        AudioClip buzzer = new AudioClip(getClass().getResource("/audio/buzzer.mp3").toExternalForm());
+//    }
+
+    public void exitGameAlert() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to exit?");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            if (viewModel != null) {
-                System.exit(0);
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            exitGame();
+        }
+    }
+
+    public void exitGame(){
+        if (viewModel != null) {
+            viewModel.exitGame();
+        }
+        System.exit(0);
+    }
+
+    public void saveMaze(ActionEvent actionEvent) {
+        if(viewModel.getMaze()==null)
+            showErrorAlert("The maze is empty \n Please generate a maze first","Saving Error");
+        else
+            viewModel.saveMaze();
+    }
+
+    public void loadMaze(ActionEvent actionEvent) {
+        this.viewModel.loadMaze();
+    }
+
+    public void openMarioKartLink(ActionEvent actionEvent) {
+        hostServices.showDocument("https://mariokarttour.com/en-US");
+    }
+
+
+    public void openAbout(ActionEvent actionEvent) {
+        if (MyViewController.aboutController == null) {
+            Parent root;
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/About.fxml").toURI().toURL());
+                root = fxmlLoader.load();
+                Stage stage = new Stage();
+                stage.setTitle("About");
+                stage.setScene(new Scene(root, 450, 450));
+                About view = fxmlLoader.getController();
+                MyViewController.setAboutController(view);
+                stage.setOnCloseRequest(event -> {
+                    view.closeWindow();
+                });
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void openHelp(ActionEvent actionEvent) {
+        if (MyViewController.helpController == null) {
+            Parent root;
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/Help.fxml").toURI().toURL());
+                root = fxmlLoader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Help");
+                stage.setScene(new Scene(root, 450, 450));
+                Help view = fxmlLoader.getController();
+                MyViewController.setHelpController(view);
+                stage.setOnCloseRequest(event -> {
+                    view.closeWindow();
+                });
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

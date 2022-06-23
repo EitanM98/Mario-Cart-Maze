@@ -20,4 +20,10 @@ public interface IModel {
     public void assignObserver(Observer o);
     public void solveMaze();
     public int[][] getSolution();
+
+    void loadMaze();
+
+    void saveMaze();
+
+    void exitGame();
 }

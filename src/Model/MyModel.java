@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 
+import View.MyViewController;
 import algorithms.search.AState;
 import algorithms.search.MazeState;
 import Server.Server;
@@ -14,6 +15,10 @@ import algorithms.search.Solution;
 import Server.*;
 import Client.*;
 import IO.*;
+import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class MyModel extends Observable implements IModel{
     private Maze maze;
@@ -32,6 +37,8 @@ public class MyModel extends Observable implements IModel{
         curCol =0;
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401,1000, new ServerStrategySolveSearchProblem());
+        mazeGeneratingServer.start();
+        solveSearchProblemServer.start();
 //        solveSearchProblemServer.start();
 //        mazeGeneratingServer.start();
     }
@@ -84,6 +91,60 @@ public class MyModel extends Observable implements IModel{
         return solutionPath;
     }
 
+    @Override
+    public void loadMaze() {
+        FileChooser fileWindow=new FileChooser();
+        fileWindow.setTitle("Load Mario Maze");
+        fileWindow.setInitialFileName("myMaze.mk_maze");
+        fileWindow.getExtensionFilters().add( new FileChooser.ExtensionFilter("Maze Files (*.maze)","*.maze"));
+        fileWindow.setInitialDirectory(new File("./src/resources"));
+        File file = fileWindow.showOpenDialog(new Stage());//Problem here!!!!
+        if (file != null) {
+            try {
+                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
+                Maze maze = (Maze) objectInputStream.readObject();
+                objectInputStream.close();
+                this.maze = maze;
+                startPos = maze.getStartPosition();
+                goalPos = maze.getGoalPosition();
+                curCol=startPos.getColumnIndex();
+                curRow=startPos.getRowIndex();
+                this.setChanged();
+                this.notifyObservers("Maze loaded");
+            } catch (Exception e){
+                MyViewController.showErrorAlert("Maze loading failed \n Please check your file","Failed loading");
+            }
+        }
+    }
+
+
+    @Override
+    public void saveMaze() {
+        FileChooser fileWindow = new FileChooser();
+        fileWindow.setTitle("Save Mario Maze");
+        fileWindow.setInitialFileName("myMaze.maze");
+        fileWindow.setInitialDirectory(new File("./src/resources"));
+        fileWindow.getExtensionFilters().add( new FileChooser.ExtensionFilter("Maze Files","*.maze"));
+        File mazeFile = fileWindow.showSaveDialog(null);
+        if (mazeFile != null) {
+            try {
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(mazeFile));
+                objectOutputStream.writeObject(this.maze);
+                MyViewController.showInfoAlert("Successfully saved","Saved");
+            } catch (IOException e) {
+                MyViewController.showErrorAlert("Wrong file format\n couldn't save the maze ","Saving Error");
+            }
+        }
+
+    }
+
+    @Override
+    public void exitGame() {
+        mazeGeneratingServer.stop();
+        solveSearchProblemServer.stop();
+    }
+
+
     public Maze getMaze() {
         return maze;
     }
@@ -95,9 +156,7 @@ public class MyModel extends Observable implements IModel{
 
     public void generateRandomMaze(int rows, int cols)
     {
-        mazeGeneratingServer.start();
         try {
-
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
@@ -118,13 +177,9 @@ public class MyModel extends Observable implements IModel{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    finally {
-                        mazeGeneratingServer.stop();
-                    }
                 }
             });
             client.communicateWithServer();
-//            initMazeTable();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -213,7 +268,6 @@ public class MyModel extends Observable implements IModel{
     @Override
     public void solveMaze() {
         if (this.maze != null) {
-            solveSearchProblemServer.start();
             try {
                 Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
                     public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -226,9 +280,6 @@ public class MyModel extends Observable implements IModel{
                             solution = (Solution) fromServer.readObject();
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                        finally {
-                            solveSearchProblemServer.stop();
                         }
                     }
                 });
