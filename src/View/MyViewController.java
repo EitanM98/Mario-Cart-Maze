@@ -2,8 +2,6 @@ package View;
 
 import ViewModel.MyViewModel;
 import javafx.application.HostServices;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -35,10 +35,6 @@ public class MyViewController implements Initializable,Observer,IView {
     @FXML
     public MazeDisplayer mazeDisplayer;
     @FXML
-    public Label lbl_player_row;
-    @FXML
-    public Label lbl_player_column;
-    @FXML
     public Label lbl_Invalid_move;
     @FXML
     public Button btn_newGame=new Button();
@@ -46,14 +42,46 @@ public class MyViewController implements Initializable,Observer,IView {
     public Button btn_showSolution=new Button();
     @FXML
     public Button btn_giveHint=new Button();
-    StringProperty update_player_position_row = new SimpleStringProperty();
-    StringProperty update_player_position_col = new SimpleStringProperty();
+
     int hint_index =1;
     private HostServices hostServices ;
     //Controllers
     private static About aboutController;
     private static GenerateMazeController newMazeController;
     private static Help helpController;
+    //Sounds section:
+    private static boolean isSoundOn=true;
+    private static boolean isMusicOn=true;
+    //Sounds paths
+    static String hintSoundPath = "./src/resources/Sounds/boing_sound.wav";
+    static String bgMusicPath = "./src/resources/Sounds/gameMusic.mp3";
+    static String errorSoundPath = "./src/resources/Sounds/oh-No.mp3";
+    static String winnerSoundPath = "./src/resources/Sounds/We_Are_The_Champions.mp3";
+
+
+    //Files
+    static File hintfile = new File(hintSoundPath);
+    static File bgMusicfile = new File(bgMusicPath);
+    static File errorSoundFile = new File(errorSoundPath);
+    static File winnerSoundFile = new File(winnerSoundPath);
+
+
+    //Media
+    static Media hintMedia = new Media(hintfile.toURI().toString());
+    static Media bgMusicMedia = new Media(bgMusicfile.toURI().toString());
+    static Media errorSoundMedia = new Media(errorSoundFile.toURI().toString());
+    static Media winnerSoundMedia = new Media(winnerSoundFile.toURI().toString());
+
+    //Media Players
+    public static MediaPlayer hintSoundPlayer =new MediaPlayer(hintMedia);
+    public static MediaPlayer bgMusicPlayer=new MediaPlayer(bgMusicMedia);
+    public static MediaPlayer errorSoundPlayer=new MediaPlayer(errorSoundMedia);
+    public static MediaPlayer winnerSoundPlayer=new MediaPlayer(winnerSoundMedia);
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        playBackgroundMusic();
+    }
 
     public static void setHelpController(Help helpController) {
         MyViewController.helpController = helpController;
@@ -79,11 +107,6 @@ public class MyViewController implements Initializable,Observer,IView {
         this.hint_index = hint_index;
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-//        lbl_player_row.textProperty().bind(update_player_position_row);
-//        lbl_player_column.textProperty().bind(update_player_position_col);
-    }
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -134,6 +157,7 @@ public class MyViewController implements Initializable,Observer,IView {
         alert.setContentText(message);
         alert.setTitle(title);
         alert.show();
+        playSound(errorSoundPlayer);
     }
 
 
@@ -180,6 +204,8 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private void mazeGenerated() {
+        if(newMazeController!=null)
+            newMazeController.closeWindow();
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
         mazeDisplayer.setGoal(viewModel.getMaze().getGoalPosition());
         mazeDisplayer.drawMaze(viewModel.getMaze());
@@ -236,13 +262,10 @@ public class MyViewController implements Initializable,Observer,IView {
             }
             mazeDisplayer.requestHint(hint_index);
             hint_index++;
+            playSound(hintSoundPlayer);
         }
         mazeDisplayer.requestFocus();
     }
-
-//    private void playSound(){
-//        AudioClip buzzer = new AudioClip(getClass().getResource("/audio/buzzer.mp3").toExternalForm());
-//    }
 
     public void exitGameAlert() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to exit?");
@@ -316,6 +339,36 @@ public class MyViewController implements Initializable,Observer,IView {
             }
         }
     }
+
+    public static void playSound(MediaPlayer sound) {
+        if(isSoundOn){
+            if(isMusicOn){
+                bgMusicPlayer.stop();
+
+            }
+            sound.play();
+            sound.seek(sound.getStartTime());
+            if(isMusicOn){//Needs To be synced!!
+                bgMusicPlayer.play();
+            }
+        }
+    }
+
+    private void playBackgroundMusic() {
+        if(isMusicOn){
+            bgMusicPlayer.play();
+//            bgMusicPlayer.setOnEndOfMedia(() -> {
+//                bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
+//                bgMusicPlayer.play();
+//            });
+        }
+        else{
+            bgMusicPlayer.stop();
+            bgMusicPlayer.seek(hintSoundPlayer.getStartTime());
+        }
+    }
+
+
 }
 
 

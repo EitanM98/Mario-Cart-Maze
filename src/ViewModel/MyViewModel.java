@@ -4,8 +4,12 @@ import Model.IModel;
 import View.MyViewController;
 import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Pair;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,6 +21,7 @@ public class MyViewModel extends Observable implements Observer {
     private int[][] solPath;
     private int curRow;
     private int curCol;
+
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -95,6 +100,7 @@ public class MyViewModel extends Observable implements Observer {
 
     private void playerWon() {
         MyViewController.showInfoAlert("Congrats you won", "Winner");
+        MyViewController.playSound(MyViewController.winnerSoundPlayer);
         //add here music and images
     }
 
@@ -103,7 +109,7 @@ public class MyViewModel extends Observable implements Observer {
                 this.getCurCol() == maze.getGoalPosition().getColumnIndex();
     }
 
-    public void generateMaze(String row_fromUser,String col_fromUser) throws Exception {
+    public void generateMaze(String row_fromUser,String col_fromUser) {
         int rows=0;
         int cols=0;
         String message="";
@@ -116,9 +122,11 @@ public class MyViewModel extends Observable implements Observer {
             message="Only numeric characters allowed";
         }
         if(!message.equals("")){
-            throw new Exception(message);
+            MyViewController.showErrorAlert(message,"Invalid Parameters");
         }
-        this.model.generateRandomMaze(rows,cols);
+        else{
+            this.model.generateRandomMaze(rows,cols);
+        }
     }
 
     public void movePlayer (KeyEvent keyEvent)

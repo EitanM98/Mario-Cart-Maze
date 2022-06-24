@@ -27,7 +27,6 @@ public class GenerateMazeController implements Initializable,IView{
         public RadioButton radioBtnCustom=new RadioButton();
         @FXML
         public Button btnGenerateMaze=new Button();
-//        StringProperty update_player_position_row = new SimpleStringProperty();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
@@ -74,11 +73,8 @@ public class GenerateMazeController implements Initializable,IView{
                 }
                 viewModel.generateMaze(level,level);
             }
-            closeWindow();
         } catch (Exception e) {//Wrong parameters
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(e.getMessage());;
-            alert.show();
+            MyViewController.showErrorAlert(e.getMessage(),"Invalid Parameters");
         }
     }
 
