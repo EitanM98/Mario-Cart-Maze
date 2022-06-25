@@ -20,7 +20,7 @@ public class GenerateMazeController implements Initializable,IView{
         @FXML
         public TextField textField_mazeColumns;
         @FXML
-        public ComboBox comboBox_difficulty=new ComboBox<>();
+        public ComboBox<String> comboBox_difficulty=new ComboBox<>();
         @FXML
         public RadioButton radioBtnRand=new RadioButton();
         @FXML

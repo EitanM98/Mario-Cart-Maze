@@ -28,8 +28,7 @@ public class MazeDisplayer extends Canvas {
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameStart = new SimpleStringProperty();
     StringProperty imageFileNameGoal = new SimpleStringProperty();
-    StringProperty imageFileNameSoloutionStep = new SimpleStringProperty("src/resources/Images/Banana.png");
-//    StringProperty imageFileNameRoad=new SimpleStringProperty("src/resources/Images/asphalt.jpg");
+    StringProperty imageFileNameSoloutionStep = new SimpleStringProperty("Resources/Images/Banana.png");
 
 
     public boolean isHintRequested() {
@@ -270,4 +269,14 @@ public class MazeDisplayer extends Canvas {
     }
 
 
+    public void setCharacter(String character) {
+        StringProperty path=null;
+        switch (character) {
+            case "Mario" -> path = new SimpleStringProperty("Resources/Images/Mario.png");
+            case "Toad"-> path=new SimpleStringProperty("Resources/Images/Toad_img.jpg");
+            case "Luigi"-> path=new SimpleStringProperty("Resources/Images/Luigi.png");
+        }
+        if(path!=null)
+            imageFileNamePlayer=path;
+    }
 }

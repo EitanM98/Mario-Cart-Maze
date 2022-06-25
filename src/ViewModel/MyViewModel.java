@@ -1,14 +1,20 @@
 package ViewModel;
 
 import Model.IModel;
+import View.GenerateMazeController;
 import View.MyViewController;
 import algorithms.mazeGenerators.Maze;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -69,12 +75,16 @@ public class MyViewModel extends Observable implements Observer {
                     case "Maze generated" , "Maze loaded" -> mazeGenerated();
                     case "Player moved" -> playerMoved();
                     case "Maze solved" -> mazeSolved();
-//                  case "Invalid move" -> invalidMove();
-//                  case "Load maze" -> mazeLoaded();
+                    case "Settings Changed"->settingsChanged();
                 }
                 setChanged();
                 notifyObservers(event);
             }
+    }
+
+    private void settingsChanged() {
+        this.maze=null;
+        this.setSolPath(null);
     }
 
 
@@ -91,17 +101,6 @@ public class MyViewModel extends Observable implements Observer {
 
     private void playerMoved() {
         this.setCurPosition(model.getCurRow(), model.getCurCol());
-    }
-
-    public void checkIfWon(){
-        if(isSolved())
-            playerWon();
-    }
-
-    private void playerWon() {
-        MyViewController.showInfoAlert("Congrats you won", "Winner");
-        MyViewController.playSound(MyViewController.winnerSoundPlayer);
-        //add here music and images
     }
 
     public boolean isSolved(){
@@ -169,5 +168,9 @@ public class MyViewModel extends Observable implements Observer {
 
     public void exitGame() {
         model.exitGame();
+    }
+
+    public void updateSettings(String generatingAlgorithm, String searchingAlgorithm) {
+        model.updateProperties(generatingAlgorithm,searchingAlgorithm);
     }
 }

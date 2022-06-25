@@ -2,6 +2,7 @@ package View;
 
 import ViewModel.MyViewModel;
 import javafx.application.HostServices;
+//import javafx.event.ActionEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -25,13 +27,6 @@ import java.util.ResourceBundle;
 
 public class MyViewController implements Initializable,Observer,IView {
 
-
-
-    private MyViewModel viewModel;
-    @FXML
-    public TextField textField_mazeRows;
-    @FXML
-    public TextField textField_mazeColumns;
     @FXML
     public MazeDisplayer mazeDisplayer;
     @FXML
@@ -43,20 +38,23 @@ public class MyViewController implements Initializable,Observer,IView {
     @FXML
     public Button btn_giveHint=new Button();
 
+    private MyViewModel viewModel;
     int hint_index =1;
     private HostServices hostServices ;
     //Controllers
-    private static About aboutController;
+    private static AboutController aboutController;
     private static GenerateMazeController newMazeController;
-    private static Help helpController;
+    private static HelpController helpController;
+    private static WinnerStageController winnerController;
+
     //Sounds section:
-    private static boolean isSoundOn=true;
-    private static boolean isMusicOn=true;
+    public static boolean isSoundOn=true;
+    public static boolean isMusicOn=true;
     //Sounds paths
-    static String hintSoundPath = "./src/resources/Sounds/boing_sound.wav";
-    static String bgMusicPath = "./src/resources/Sounds/gameMusic.mp3";
-    static String errorSoundPath = "./src/resources/Sounds/oh-No.mp3";
-    static String winnerSoundPath = "./src/resources/Sounds/We_Are_The_Champions.mp3";
+    static String hintSoundPath = "./Resources/Sounds/boing_sound.wav";
+    static String bgMusicPath = "./Resources/Sounds/gameMusic.mp3";
+    static String errorSoundPath = "./Resources/Sounds/oh-No.mp3";
+    static String winnerSoundPath = "./Resources/Sounds/We_Are_The_Champions.mp3";
 
 
     //Files
@@ -83,7 +81,7 @@ public class MyViewController implements Initializable,Observer,IView {
         playBackgroundMusic();
     }
 
-    public static void setHelpController(Help helpController) {
+    public static void setHelpController(HelpController helpController) {
         MyViewController.helpController = helpController;
     }
 
@@ -91,22 +89,17 @@ public class MyViewController implements Initializable,Observer,IView {
         MyViewController.newMazeController = newMazeController;
     }
 
-    public static void setAboutController(About aboutController) {
+    public static void setAboutController(AboutController aboutController) {
         MyViewController.aboutController = aboutController;
     }
 
-    public int getHint_index() {
-        return hint_index;
+    public static void setWinnerController(WinnerStageController winnerController) {
+        MyViewController.winnerController = winnerController;
     }
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
-
-    public void setHint_index(int hint_index) {
-        this.hint_index = hint_index;
-    }
-
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -117,17 +110,24 @@ public class MyViewController implements Initializable,Observer,IView {
         return viewModel;
     }
 
+    public static void setIsSoundOn(boolean isSoundOn) {
+        MyViewController.isSoundOn = isSoundOn;
+    }
+
+    public static void setIsMusicOn(boolean isMusicOn) {
+        MyViewController.isMusicOn = isMusicOn;
+    }
 
     public void generateMaze() {
         if (MyViewController.newMazeController == null) {
             Parent root;
             try {
                 disableButtons(true);
-                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/GenerateMaze.fxml").toURI().toURL());
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GenerateMaze.fxml"));
                 root = fxmlLoader.load();
                 Stage stage = new Stage();
                 stage.setTitle("Generate Maze");
-                stage.setScene(new Scene(root, 450, 450));
+                stage.setScene(new Scene(root, 265, 464));
                 GenerateMazeController view = fxmlLoader.getController();
                 MyViewController.setNewMazeController(view);
                 view.setViewModel(viewModel);
@@ -135,6 +135,8 @@ public class MyViewController implements Initializable,Observer,IView {
                     disableButtons(false);
                     view.closeWindow();
                 });
+                stage.setResizable(false);
+                stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -183,11 +185,26 @@ public class MyViewController implements Initializable,Observer,IView {
                 case "Maze solved" -> mazeSolved();
                 case "Player moved" -> playerMoved();
                 case "Invalid move" -> invalidMove();
+                case "Settings Changed"->settingsChanged();
             }
         }
     }
 
+    private void settingsChanged() {
+        //TO-DO
+        disableButtons(true);
+        mazeDisplayer.setVisible(false);
+    }
 
+    public void updateViewSettings(String character,boolean sound,boolean bgMusic){
+        setIsMusicOn(bgMusic);
+        setIsSoundOn(sound);
+        playBackgroundMusic();
+        mazeDisplayer.setCharacter(character);
+        if(viewModel.getMaze()!=null)
+            mazeDisplayer.draw();
+        mazeDisplayer.requestFocus();
+    }
 
     private void invalidMove() {
         Runnable task=()->{
@@ -204,8 +221,11 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private void mazeGenerated() {
+       if(winnerController!=null)
+            winnerController.closeWindow();
         if(newMazeController!=null)
             newMazeController.closeWindow();
+//        mazeDisplayer.setVisible(true);
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
         mazeDisplayer.setGoal(viewModel.getMaze().getGoalPosition());
         mazeDisplayer.drawMaze(viewModel.getMaze());
@@ -213,7 +233,6 @@ public class MyViewController implements Initializable,Observer,IView {
         disableButtons(false);
         hint_index =1;
         mazeDisplayer.requestFocus();
-//        playerMoved();
     }
 
     private void disableButtons(boolean bool) {
@@ -226,9 +245,35 @@ public class MyViewController implements Initializable,Observer,IView {
 
     private void playerMoved() {
         mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
-        viewModel.checkIfWon();
+        if(viewModel.isSolved())
+            playerWon();
+        else if(winnerController!=null)
+            winnerController.closeWindow();
     }
 
+
+    private void playerWon() {
+        Parent root;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PlayerWon.fxml"));
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Congratulations");
+            stage.setScene(new Scene(root, 275, 333));
+            WinnerStageController winnerWindow = fxmlLoader.getController();
+            MyViewController.setWinnerController(winnerWindow);
+            winnerWindow.setView(this);
+            stage.setOnCloseRequest(event -> {
+                winnerWindow.closeWindow();
+                playBackgroundMusic();
+            });
+            stage.show();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        MyViewController.playSound(MyViewController.winnerSoundPlayer);
+        //add here music and images
+    }
 
     private void mazeSolved() {
         mazeDisplayer.setSolution(viewModel.getSolution());
@@ -282,36 +327,38 @@ public class MyViewController implements Initializable,Observer,IView {
         System.exit(0);
     }
 
-    public void saveMaze(ActionEvent actionEvent) {
+    public void saveMaze() {
         if(viewModel.getMaze()==null)
             showErrorAlert("The maze is empty \n Please generate a maze first","Saving Error");
         else
             viewModel.saveMaze();
     }
 
-    public void loadMaze(ActionEvent actionEvent) {
+    public void loadMaze() {
         this.viewModel.loadMaze();
     }
 
-    public void openMarioKartLink(ActionEvent actionEvent) {
+    public void openMarioKartLink() {
         hostServices.showDocument("https://mariokarttour.com/en-US");
     }
 
 
-    public void openAbout(ActionEvent actionEvent) {
+    public void openAbout() {
         if (MyViewController.aboutController == null) {
             Parent root;
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/About.fxml").toURI().toURL());
+                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/resources/View/About.fxml").toURI().toURL());
                 root = fxmlLoader.load();
                 Stage stage = new Stage();
                 stage.setTitle("About");
-                stage.setScene(new Scene(root, 450, 450));
-                About view = fxmlLoader.getController();
+                stage.setScene(new Scene(root, 342, 452));
+                AboutController view = fxmlLoader.getController();
                 MyViewController.setAboutController(view);
                 stage.setOnCloseRequest(event -> {
                     view.closeWindow();
                 });
+                stage.setResizable(false);
+                stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -319,20 +366,22 @@ public class MyViewController implements Initializable,Observer,IView {
         }
     }
 
-    public void openHelp(ActionEvent actionEvent) {
+    public void openHelp() {
         if (MyViewController.helpController == null) {
             Parent root;
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/View/Help.fxml").toURI().toURL());
+                FXMLLoader fxmlLoader = new FXMLLoader(new File("src/resources/View/Help.fxml").toURI().toURL());
                 root = fxmlLoader.load();
                 Stage stage = new Stage();
                 stage.setTitle("Help");
-                stage.setScene(new Scene(root, 450, 450));
-                Help view = fxmlLoader.getController();
+                stage.setScene(new Scene(root, 605, 388));
+                HelpController view = fxmlLoader.getController();
                 MyViewController.setHelpController(view);
                 stage.setOnCloseRequest(event -> {
                     view.closeWindow();
                 });
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -342,33 +391,50 @@ public class MyViewController implements Initializable,Observer,IView {
 
     public static void playSound(MediaPlayer sound) {
         if(isSoundOn){
-            if(isMusicOn){
-                bgMusicPlayer.stop();
-
+            if(MyViewController.isMusicOn){
+                MyViewController.bgMusicPlayer.stop();
             }
             sound.play();
+            sound.setOnEndOfMedia(MyViewController::playBackgroundMusic);
+            sound.setOnStopped(MyViewController::playBackgroundMusic);
             sound.seek(sound.getStartTime());
-            if(isMusicOn){//Needs To be synced!!
-                bgMusicPlayer.play();
-            }
         }
     }
 
-    private void playBackgroundMusic() {
-        if(isMusicOn){
+    private static void playBackgroundMusic() {
+        if(isMusicOn){ //Start
             bgMusicPlayer.play();
-//            bgMusicPlayer.setOnEndOfMedia(() -> {
-//                bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
-//                bgMusicPlayer.play();
-//            });
+            bgMusicPlayer.setOnEndOfMedia(() -> {
+                bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
+                bgMusicPlayer.play();
+            });
         }
-        else{
+        else{ //Stop
             bgMusicPlayer.stop();
-            bgMusicPlayer.seek(hintSoundPlayer.getStartTime());
+            bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
         }
     }
 
-
+    public void openPreferences() {
+        Parent root;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Preferences.fxml"));
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Preferences");
+            stage.setScene(new Scene(root, 235, 400));
+            PreferencesController prefController = fxmlLoader.getController();
+            prefController.setViewController(this);
+            stage.setOnCloseRequest(event -> {
+                prefController.closeWindow();
+            });
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

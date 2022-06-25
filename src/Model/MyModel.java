@@ -292,4 +292,34 @@ public class MyModel extends Observable implements IModel{
         }
     }
 
+    public void updateProperties(String mazeGenerator,String searchingAlgorithm){
+        Configurations config=Configurations.getInstance();
+        config.AddOrUpdateProperty("mazeGeneratingAlgorithm",mazeGenerator);
+        config.AddOrUpdateProperty("mazeSearchingAlgorithm",searchingAlgorithm);
+        restartSevers();
+        setChanged();
+        notifyObservers("Settings Changed");
+    }
+
+    private void restartSevers() {
+        mazeGeneratingServer.stop();
+        solveSearchProblemServer.stop();
+        try {
+            Thread.sleep(2500);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        solveSearchProblemServer = new Server(5401,1000, new ServerStrategySolveSearchProblem());
+        solveSearchProblemServer.start();
+        mazeGeneratingServer.start();
+        startPos=null;
+        goalPos=null;
+        maze = null;
+        solution=null;
+        curRow = 0;
+        curCol=0;
+    }
+
 }

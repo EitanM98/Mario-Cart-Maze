@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="388.0" prefWidth="562.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.HelpController">
+   <children>
+      <VBox prefHeight="201.0" prefWidth="605.0">
+         <children>
+            <HBox prefHeight="151.0" prefWidth="600.0">
+               <children>
+                  <VBox prefHeight="80.0" prefWidth="347.0">
+                     <children>
+                        <Label fx:id="how_to_play_lbl" prefHeight="27.0" prefWidth="289.0" styleClass="help_labels,help_headings" text="How To Play?" textAlignment="CENTER" />
+                        <Label fx:id="instructions_lbl" prefHeight="165.0" prefWidth="289.0" styleClass="help_labels" text="instructions" />
+                     </children>
+                  </VBox>
+                  <HBox prefHeight="156.0" prefWidth="224.0">
+                     <children>
+                        <ImageView fitHeight="204.0" fitWidth="317.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../Resources/Images/Help_img.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutY="198.0" prefHeight="190.0" prefWidth="605.0">
+         <children>
+            <HBox prefHeight="240.0" prefWidth="600.0">
+               <children>
+                  <HBox prefHeight="201.0" prefWidth="302.0">
+                     <children>
+                        <ImageView fitHeight="190.0" fitWidth="191.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../Resources/Images/QA_img.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <VBox prefHeight="204.0" prefWidth="387.0">
+                     <children>
+                        <Label fx:id="qa_lbl" prefHeight="43.0" prefWidth="348.0" styleClass="help_labels,help_headings" text="How To Play?" textAlignment="CENTER" />
+                        <Label fx:id="qa_content_lbl" prefHeight="138.0" prefWidth="357.0" styleClass="help_labels" text="instructions" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
