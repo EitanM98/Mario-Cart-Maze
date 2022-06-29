@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.transform.Scale;
@@ -54,10 +55,10 @@ public class MyViewController implements Initializable,Observer,IView {
     public static boolean isSoundOn = true;
     public static boolean isMusicOn = true;
     //Sounds paths
-    static String hintSoundPath = "./Resources/Sounds/boing_sound.wav";
-    static String bgMusicPath = "./Resources/Sounds/gameMusic.mp3";
-    static String errorSoundPath = "./Resources/Sounds/oh-No.mp3";
-    static String winnerSoundPath = "./Resources/Sounds/We_Are_The_Champions.mp3";
+    static String hintSoundPath = "./src/resources/Sounds/boing_sound.wav";
+    static String bgMusicPath = "./src/resources/Sounds/gameMusic.mp3";
+    static String errorSoundPath = "./src/resources/Sounds/oh-No.mp3";
+    static String winnerSoundPath = "./src/resources/Sounds/We_Are_The_Champions.mp3";
 
 
     //Files
@@ -196,6 +197,8 @@ public class MyViewController implements Initializable,Observer,IView {
         //TO-DO
         btn_giveHint.disableProperty().setValue(true);
         btn_showSolution.disableProperty().setValue(true);
+        mazeDisplayerBoarderPane.setVisible(false);
+        mazeDisplayerBoarderPane.setDisable(true);
         mazeDisplayer.draw();
 //        mazeDisplayer.setVisible(false);
     }
@@ -229,7 +232,8 @@ public class MyViewController implements Initializable,Observer,IView {
             winnerController.closeWindow();
         if (newMazeController != null)
             newMazeController.closeWindow();
-//        mazeDisplayer.setVisible(true);
+        mazeDisplayerBoarderPane.setVisible(true);
+        mazeDisplayerBoarderPane.setDisable(false);
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
         mazeDisplayer.setGoal(viewModel.getMaze().getGoalPosition());
         mazeDisplayer.drawMaze(viewModel.getMaze());
@@ -473,14 +477,8 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
 
-    public void mouseClicked(MouseEvent mouseEvent) {
-//        setMouseXY(mouseEvent.getX(),mouseEvent.getY());
-//        mazeDisplayer.requestFocus();
-    }
-
     public void mouseReleased(MouseEvent mouseEvent) {
         setMouseXY(mouseEvent.getX(), mouseEvent.getY());
-//        mouseEvent.consume();
     }
 
     public void stageResized() {
@@ -496,54 +494,17 @@ public class MyViewController implements Initializable,Observer,IView {
         });
     }
 
-//    public void zoomMaze(ScrollEvent scrollEvent) {
-//        double deltaY = scrollEvent.getDeltaY();
-//        if (scrollEvent.isControlDown()) {
-//            double zoomFactor = 1.1;
-//            if (deltaY < 0) {
-//                zoomFactor = 0.90;
-//            }
-//            Scale newScale = new Scale();
-//            newScale.setX(mazeDisplayer.getScaleX() * zoomFactor);
-//            newScale.setY(mazeDisplayer.getScaleY() * zoomFactor);
-//            newScale.setPivotX(mazeDisplayer.getScaleX());
-//            newScale.setPivotY(mazeDisplayer.getScaleY());
-//            mazeDisplayer.getTransforms().add(newScale);
-//            mazeDisplayerBoarderPane.set
-//            mazeDisplayerScrollPane.setContent(mazeDisplayer);
-//            scrollEvent.consume();
-//        }
-//    }
-//        public void zoomMaze(ScrollEvent scrollEvent) {
-//            double deltaY = scrollEvent.getDeltaY();
-//            if (scrollEvent.isControlDown()) {
-//                if (deltaY < 0)
-//                    mazeDisplayer.zoomOut();
-//                else
-//                    mazeDisplayer.zoomIn();
-//            }
-//        }
     public void zoomMaze(ScrollEvent event) {
         if(event.isControlDown()) {
             double delta = 1.1;
-
-//        double scaleX = mazeDisplayer.getScaleX();
             double scaleY = mazeDisplayer.getScaleY();
-//        double oldScaleX = scaleX;
             double oldScaleY = scaleY;
 
-//        if (event.getDeltaX() < 0)
-//            scaleX /= delta;
-//        else
-//            scaleX *= delta;
             if (event.getDeltaY() < 0)
                 scaleY /= delta;
             else
                 scaleY *= delta;
-//        scaleX=clamp( scaleX, MazeDisplayer.minScale,MazeDisplayer.maxScale);
             scaleY = isInScale(scaleY, MazeDisplayer.minScale, MazeDisplayer.maxScale);
-
-//        double fx = (scaleX / oldScaleX)-1;
             double fy = (scaleY / oldScaleY) - 1;
 
             double dx = (event.getSceneX() - (mazeDisplayer.getBoundsInParent().getWidth() / 2 + mazeDisplayer.getBoundsInParent().getMinX()));
@@ -552,7 +513,6 @@ public class MyViewController implements Initializable,Observer,IView {
             mazeDisplayer.setScaleX(scaleY);
             mazeDisplayer.setScaleY(scaleY);
 
-            // note: pivot value must be untransformed, i. e. without scaling
             mazeDisplayer.setPivot(fy * dx, fy * dy);
             mazeDisplayer.draw();
             event.consume();
@@ -567,6 +527,9 @@ public class MyViewController implements Initializable,Observer,IView {
             return value;
             }
 
+    public void mouseClicked(MouseEvent mouseEvent) {
+        mazeDisplayer.requestFocus();
+    }
 }
 
 

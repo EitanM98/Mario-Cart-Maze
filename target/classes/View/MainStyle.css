@@ -1,5 +1,6 @@
 .root{
-    -fx-background-color: #eea29a ;
+    /*-fx-background-color: #eea29a ;*/
+    -fx-background-color: #deeaee ;
 }
 
 Button {
@@ -20,10 +21,12 @@ Button:hover{
     -fx-content-display: LEFT;
 }
 
-#mazeDisplayerBoarderPane{
-    -fx-border-style: solid;
-    -fx-border-color: Black;
-    -fx-border-width: 1px;
+.mazeDisplayer{
+    -fx-background-color: #b1cbbb;
+}
+
+.mazePadding{
+    -fx-padding: 12px;
 }
 
 Label{
@@ -32,6 +35,9 @@ Label{
     -fx-font-weight: bold;
 }
 
+#lbl_Invalid_move{
+    -fx-background-color: White;
+}
 
 .about_labels{
     -fx-padding: 8px;
@@ -47,11 +53,27 @@ Label{
 }
 
 #ViewPane{
-    /*-fx-background-image: url("../../Resources/Images/mario-background.jpg");*/
+    -fx-background-image: url("../Images/mario-background.jpg");
     -fx-background-repeat: stretch;
-    -fx-background-size: 900 506;
+    -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
 }
 
+.paddingStyle {
+    -fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
 
+.buttonsGrid{
+    -fx-background-color: #deeaee ;
+}
+
+.gameButtons{
+    -fx-background-color: #86af49;
+}
+
+#btn_exitGame{
+    -fx-background-color: #c94c4c;
+}

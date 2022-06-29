@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -21,12 +22,13 @@
 <!--<?import View.*?>-->
 <?import View.*?>
 
-<BorderPane fx:id="ViewPane" maxHeight="1.7976931348623157E308" onDragDetected="#dragDetected" onMouseClicked="#mouseClicked" prefHeight="497.0" prefWidth="693.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="ViewPane" cache="true" maxHeight="1.7976931348623157E308" onDragDetected="#dragDetected" onMouseClicked="#mouseClicked" prefHeight="509.0" prefWidth="872.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="163.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
                 <GridPane>
                      <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -42,15 +44,20 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
-                    <Button fx:id="btn_newGame" onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="New Game" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                    <Button fx:id="btn_showSolution" cancelButton="true" disable="true" onAction="#showHideSolution" prefHeight="25.0" prefWidth="131.0" text="Show/ Hide Solution" GridPane.columnSpan="3" GridPane.rowIndex="7" />
-               <Button fx:id="btn_giveHint" disable="true" mnemonicParsing="false" onAction="#giveAHint" prefHeight="25.0" prefWidth="130.0" text="Give Me A Hint" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-               <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
+                    <Button fx:id="btn_newGame" onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" styleClass="gameButtons" text="New Game" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" />
+                    <Button fx:id="btn_showSolution" cancelButton="true" disable="true" onAction="#showHideSolution" prefHeight="25.0" prefWidth="131.0" styleClass="gameButtons" text="Show/ Hide Solution" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+               <Button fx:id="btn_giveHint" disable="true" mnemonicParsing="false" onAction="#giveAHint" prefHeight="25.0" prefWidth="130.0" styleClass="gameButtons" text="Give Me A Hint" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+               <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="3">
                   <image>
-                     <Image url="@../../../Resources/Images/Mario.jpg" />
+                     <Image url="@../Images/Mario.jpg" />
                   </image></ImageView>
-               <Button fx:id="btn_exitGame" mnemonicParsing="false" onAction="#exitGameAlert" prefHeight="23.0" prefWidth="132.0" text="Exit Game" GridPane.columnSpan="3" GridPane.rowIndex="8" />
+               <Button fx:id="btn_exitGame" mnemonicParsing="false" onAction="#exitGameAlert" prefHeight="23.0" prefWidth="132.0" styleClass="gameButtons" text="Exit Game" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" />
+               <styleClass>
+                  <String fx:value="buttonsGrid" />
+                  <String fx:value="paddingStyle" />
+               </styleClass>
                 </GridPane>
             </children>
             <padding>
@@ -92,7 +99,7 @@
         </VBox>
     </top>
    <center>
-      <BorderPane fx:id="mazeDisplayerBoarderPane" onMouseClicked="#mouseClicked" prefHeight="485.0" prefWidth="515.0" BorderPane.alignment="CENTER">
+      <BorderPane fx:id="mazeDisplayerBoarderPane" disable="true" visible="false" onMouseClicked="#mouseClicked" prefHeight="485.0" prefWidth="515.0" BorderPane.alignment="CENTER">
          <bottom>
             <Label fx:id="lbl_Invalid_move" alignment="CENTER" prefHeight="17.0" prefWidth="499.0" text="***Invalid move, you can't move through walls*** " textAlignment="CENTER" textFill="RED" visible="false" BorderPane.alignment="CENTER">
                <font>
@@ -101,13 +108,16 @@
             </Label>
          </bottom>
          <center>
-            <ScrollPane fx:id="mazeDisplayerScrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="mazeDisplayerScrollPane" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </BorderPane.margin>
               <content>
-                <AnchorPane >
+                <AnchorPane styleClass="paddingStyle">
                      <children>
-                          <Pane fx:id="mazeDisplayerPane" onScroll="#zoomMaze">
+                          <Pane fx:id="mazeDisplayerPane" onScroll="#zoomMaze" styleClass="mazeDisplayer">
                               <children>
-                                  <MazeDisplayer fx:id="mazeDisplayer" imageFileNameGoal="Resources/Images/goal-position.jpg" imageFileNamePlayer="Resources/Images/Mario.png" imageFileNameStart="Resources/Images/Start-position.jpg" imageFileNameWall="./Resources/Images/WaterWall.jpg" onKeyPressed="#keyPressed" />
+                                  <MazeDisplayer fx:id="mazeDisplayer" imageFileNameGoal="src/resources/Images/goal-position.jpg" imageFileNamePlayer="src/resources/Images/Mario.png" imageFileNameStart="src/resources/Images/Start-position.jpg" imageFileNameWall="./src/resources/Images/woodWall.jpg" onKeyPressed="#keyPressed" />
                               </children>
                               <padding>
                                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -116,6 +126,10 @@
                      </children>
                   </AnchorPane>
               </content>
+               <styleClass>
+                  <String fx:value="paddingStyle" />
+                  <String fx:value="mazeDisplayer" />
+               </styleClass>
             </ScrollPane>
          </center>
       </BorderPane>

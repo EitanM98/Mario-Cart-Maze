@@ -20,7 +20,7 @@
                <children>
                   <ImageView fitHeight="235.0" fitWidth="233.0" layoutY="-6.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../Resources/Images/settings_img.png" />
+                        <Image url="@../Images/settings_img.png" />
                      </image>
                   </ImageView>
                </children>

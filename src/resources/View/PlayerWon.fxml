@@ -12,7 +12,7 @@
    <children>
       <ImageView fitHeight="302.0" fitWidth="280.0" layoutX="1.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../Resources/Images/winner_img.jpg" />
+            <Image url="@../Images/winner_img.jpg" />
          </image></ImageView>
       <GridPane layoutX="1.0" layoutY="299.0" prefHeight="34.0" prefWidth="281.0">
         <columnConstraints>
