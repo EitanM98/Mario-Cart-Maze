@@ -16,9 +16,7 @@ import java.util.ResourceBundle;
 public class GenerateMazeController implements Initializable,IView{
        private MyViewModel viewModel;
         @FXML
-        public TextField textField_mazeRows;
-        @FXML
-        public TextField textField_mazeColumns;
+        public TextField textField_mazeSize;
         @FXML
         public ComboBox<String> comboBox_difficulty=new ComboBox<>();
         @FXML
@@ -53,16 +51,14 @@ public class GenerateMazeController implements Initializable,IView{
     }
 
 
-    public void generateMaze(ActionEvent actionEvent) {
+    public void generateMaze() {
         String easy_lvl="15";
         String medium_lvl="30";
         String hard_lvl="50";
         try {
             if(radioBtnCustom.isSelected())
-                viewModel.generateMaze(textField_mazeRows.getText(),textField_mazeColumns.getText());
+                viewModel.generateMaze(textField_mazeSize.getText(),textField_mazeSize.getText());
             else if(radioBtnRand.isSelected()){
-//                if(comboBox_difficulty.getValue()==null)
-//                    throw new Exception("Please choose difficulty level");
                 String choice=comboBox_difficulty.getValue();
                 String level="";
                 switch (choice){
@@ -80,6 +76,6 @@ public class GenerateMazeController implements Initializable,IView{
     public void closeWindow(){
         Stage stage = (Stage) btnGenerateMaze.getScene().getWindow();
         stage.close();
-        MyViewController.setNewMazeController(null);
+        MyViewController.setGenerateMazeController(null);
     }
 }

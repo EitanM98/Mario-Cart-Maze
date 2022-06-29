@@ -117,6 +117,8 @@ public class MyViewModel extends Observable implements Observer {
             cols = Integer.parseInt(col_fromUser);
             if(rows<=0 || cols<=0)
                 message="Quantity of rows and cols must be positive integer,\n Please try again";
+            if(rows>1000 || cols>1000)
+                message="Too big maze !\nMaximum number of rows/cols is 1000";
         } catch (NumberFormatException e) {
             message="Only numeric characters allowed";
         }

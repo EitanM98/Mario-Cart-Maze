@@ -17,7 +17,6 @@ public class WinnerStageController {
         MyViewController.winnerSoundPlayer.stop();
         Stage stage = (Stage) btnSaveMaze.getScene().getWindow();
         stage.close();
-        MyViewController.setWinnerController(null);
     }
 
     public void saveMaze() {

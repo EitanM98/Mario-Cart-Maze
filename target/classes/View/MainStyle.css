@@ -6,9 +6,10 @@
 Button {
     -fx-text-fill: white;
     -fx-font-family: "Arial Narrow";
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-font-weight: bold italic;
+    -fx-background-color: #86af49;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-padding: 6 10 6 10;
 }
 
 Button:hover{
@@ -77,3 +78,13 @@ Label{
 #btn_exitGame{
     -fx-background-color: #c94c4c;
 }
+
+MenuBar{
+    -fx-background-color: #b1cbbb;
+}
+
+ComboBox{
+    -fx-background-color: #ffffff;
+    -fx-font-weight: bold;
+}
+

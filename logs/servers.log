@@ -101,3 +101,119 @@
 2022.06.29 18:02:24.939 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 4 moves.
 2022.06.29 18:04:34.981 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
 2022.06.29 18:04:35.001 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 18:19:14.354 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:19:14.380 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 10 moves.
+2022.06.29 18:20:04.347 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:20:04.370 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 5 moves.
+2022.06.29 18:22:00.168 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:22:00.192 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 5 moves.
+2022.06.29 18:23:20.666 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:23:20.685 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 10 moves.
+2022.06.29 18:24:53.902 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:24:53.932 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 5 moves.
+2022.06.29 18:26:38.343 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:26:38.361 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 5 moves.
+2022.06.29 18:27:11.478 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:27:11.499 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 18:36:10.827 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:36:10.855 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 18:37:18.674 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:37:18.715 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 18:38:05.239 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 18:38:05.259 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 18:41:03.133 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.59.1address
+2022.06.29 18:41:03.188 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 8 moves.
+2022.06.29 18:42:09.244 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.59.1address
+2022.06.29 18:42:09.256 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 18 moves.
+2022.06.29 18:43:02.475 INFO  Model.MyModel - Maze was successfully saved
+2022.06.29 18:43:07.576 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 18 moves.
+2022.06.29 18:43:12.384 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.59.1address
+2022.06.29 18:43:12.400 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 14 moves.
+2022.06.29 18:43:16.976 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 18 moves.
+2022.06.29 18:48:41.135 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.59.1address
+2022.06.29 18:48:41.173 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.59.1 the solution has 11 moves.
+2022.06.29 19:12:56.306 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.155.171address
+2022.06.29 19:12:56.325 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.155.171 the solution has 11 moves.
+2022.06.29 19:13:11.747 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.155.171 the solution has 18 moves.
+2022.06.29 19:13:35.665 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.155.171address
+2022.06.29 19:13:35.680 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.155.171 the solution has 13 moves.
+2022.06.29 19:45:33.346 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:45:33.372 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 7 moves.
+2022.06.29 19:46:13.659 INFO  Model.MyModel - Maze was successfully saved
+2022.06.29 19:47:12.976 INFO  Model.MyModel - Maze with 30 rows and 30 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:47:12.987 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 14 moves.
+2022.06.29 19:47:24.256 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 7 moves.
+2022.06.29 19:48:09.481 INFO  Model.MyModel - Maze with 15 rows and 15 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:48:16.249 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:48:42.392 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:48:42.431 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 9 moves.
+2022.06.29 19:48:55.261 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:49:19.868 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:50:14.393 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:50:32.884 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:50:32.908 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 18 moves.
+2022.06.29 19:52:50.579 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:52:50.590 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 19:52:55.675 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:52:55.684 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 14 moves.
+2022.06.29 19:53:48.998 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 19:53:49.020 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 9 moves.
+2022.06.29 21:08:04.945 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:08:04.968 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 17 moves.
+2022.06.29 21:12:37.931 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:12:37.951 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 13 moves.
+2022.06.29 21:12:43.091 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:12:43.109 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 21:12:48.395 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:12:48.404 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 10 moves.
+2022.06.29 21:13:22.934 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:34:17.671 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:34:17.691 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 21:34:38.054 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:34:38.072 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 2 moves.
+2022.06.29 21:36:16.398 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:36:16.415 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 6 moves.
+2022.06.29 21:36:47.771 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:36:47.787 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 2 moves.
+2022.06.29 21:40:39.473 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:40:39.492 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 21:40:43.323 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:40:43.334 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 13 moves.
+2022.06.29 21:40:52.385 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:40:52.396 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 6 moves.
+2022.06.29 21:41:09.659 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:41:09.668 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 19 moves.
+2022.06.29 21:41:15.618 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:41:15.631 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 23 moves.
+2022.06.29 21:42:55.769 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:42:55.785 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 4 moves.
+2022.06.29 21:43:05.323 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:43:05.336 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 16 moves.
+2022.06.29 21:43:20.997 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:43:21.005 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 19 moves.
+2022.06.29 21:43:33.055 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:43:33.063 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 13 moves.
+2022.06.29 21:43:51.063 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:43:51.073 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 13 moves.
+2022.06.29 21:45:39.117 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:45:39.147 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 21:46:02.918 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:46:02.930 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 16 moves.
+2022.06.29 21:46:16.804 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:46:16.814 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 21:46:28.860 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 21:46:28.872 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 18 moves.
+2022.06.29 22:03:28.712 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:03:28.732 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 9 moves.
+2022.06.29 22:15:56.042 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:15:56.063 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 2 moves.
+2022.06.29 22:16:16.378 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:16:16.401 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 11 moves.
+2022.06.29 22:17:49.878 INFO  Model.MyModel - Maze with 50 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:17:49.910 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 53 moves.
+2022.06.29 22:29:18.206 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:29:18.224 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 12 moves.
+2022.06.29 22:29:27.244 INFO  Model.MyModel - Maze with 100 rows and 100 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:29:27.272 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 65 moves.
+2022.06.29 22:32:50.531 INFO  Model.MyModel - Maze with 10 rows and 10 cols was successfully generated for DESKTOP-SV9RFAN/192.168.14.11address
+2022.06.29 22:32:50.550 INFO  Model.MyModel - A maze was solved for DESKTOP-SV9RFAN/192.168.14.11 the solution has 10 moves.

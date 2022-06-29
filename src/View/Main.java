@@ -17,7 +17,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Mario Kart Maze");
-        primaryStage.setScene(new Scene(root, 1200, 900));
+        primaryStage.setScene(new Scene(root, 1200, 600));
         IModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         MyViewController view = fxmlLoader.getController();
@@ -25,7 +25,9 @@ public class Main extends Application {
         view.setViewModel(viewModel);
         primaryStage.show();
         view.stageResized();
-        primaryStage.setOnCloseRequest(event->{view.exitGameAlert();});
+        primaryStage.setOnCloseRequest(event->{
+            event.consume();
+            view.exitGameAlert();});
 
     }
 

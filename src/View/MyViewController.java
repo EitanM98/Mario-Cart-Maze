@@ -2,7 +2,6 @@ package View;
 
 import ViewModel.MyViewModel;
 import javafx.application.HostServices;
-//import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +15,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -29,7 +27,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MyViewController implements Initializable,Observer,IView {
-
+    @FXML
+    public Pane mazeDisplayerPane;
     @FXML
     public MazeDisplayer mazeDisplayer;
     @FXML
@@ -45,15 +44,12 @@ public class MyViewController implements Initializable,Observer,IView {
     private MyViewModel viewModel;
     int hint_index = 1;
     private HostServices hostServices;
-    //Controllers
-    private static AboutController aboutController;
-    private static GenerateMazeController newMazeController;
-    private static HelpController helpController;
-    private static WinnerStageController winnerController;
+    private static GenerateMazeController generateMazeController=null;
 
     //Sounds section:
-    public static boolean isSoundOn = true;
-    public static boolean isMusicOn = true;
+    //TODO: Change to true
+    public static boolean isSoundOn = false;
+    public static boolean isMusicOn = false;
     //Sounds paths
     static String hintSoundPath = "./src/resources/Sounds/boing_sound.wav";
     static String bgMusicPath = "./src/resources/Sounds/gameMusic.mp3";
@@ -87,25 +83,10 @@ public class MyViewController implements Initializable,Observer,IView {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playBackgroundMusic();
-        mazeDisplayer.heightProperty().bind(mazeDisplayerBoarderPane.heightProperty());
-        mazeDisplayer.widthProperty().bind(mazeDisplayerBoarderPane.widthProperty());
+        mazeDisplayer.heightProperty().bind(mazeDisplayerPane.heightProperty());
+        mazeDisplayer.widthProperty().bind(mazeDisplayerPane.widthProperty());
     }
 
-    public static void setHelpController(HelpController helpController) {
-        MyViewController.helpController = helpController;
-    }
-
-    public static void setNewMazeController(GenerateMazeController newMazeController) {
-        MyViewController.newMazeController = newMazeController;
-    }
-
-    public static void setAboutController(AboutController aboutController) {
-        MyViewController.aboutController = aboutController;
-    }
-
-    public static void setWinnerController(WinnerStageController winnerController) {
-        MyViewController.winnerController = winnerController;
-    }
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
@@ -128,8 +109,13 @@ public class MyViewController implements Initializable,Observer,IView {
         MyViewController.isMusicOn = isMusicOn;
     }
 
+    public static void setGenerateMazeController(GenerateMazeController generateMazeController) {
+        MyViewController.generateMazeController = generateMazeController;
+    }
+
+
     public void generateMaze() {
-        if (MyViewController.newMazeController == null) {
+        if (generateMazeController==null){
             Parent root;
             try {
                 disableButtons(true);
@@ -139,8 +125,8 @@ public class MyViewController implements Initializable,Observer,IView {
                 stage.setTitle("Generate Maze");
                 stage.setScene(new Scene(root, 265, 464));
                 GenerateMazeController view = fxmlLoader.getController();
-                MyViewController.setNewMazeController(view);
                 view.setViewModel(viewModel);
+                setGenerateMazeController(view);
                 stage.setOnCloseRequest(event -> {
                     disableButtons(false);
                     view.closeWindow();
@@ -194,13 +180,11 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private void settingsChanged() {
-        //TO-DO
         btn_giveHint.disableProperty().setValue(true);
         btn_showSolution.disableProperty().setValue(true);
         mazeDisplayerBoarderPane.setVisible(false);
         mazeDisplayerBoarderPane.setDisable(true);
         mazeDisplayer.draw();
-//        mazeDisplayer.setVisible(false);
     }
 
     public void updateViewSettings(String character, boolean sound, boolean bgMusic) {
@@ -228,10 +212,8 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private void mazeGenerated() {
-        if (winnerController != null)
-            winnerController.closeWindow();
-        if (newMazeController != null)
-            newMazeController.closeWindow();
+        if (generateMazeController!=null)
+            generateMazeController.closeWindow();
         mazeDisplayerBoarderPane.setVisible(true);
         mazeDisplayerBoarderPane.setDisable(false);
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
@@ -254,8 +236,6 @@ public class MyViewController implements Initializable,Observer,IView {
         mazeDisplayer.set_player_position(viewModel.getCurRow(), viewModel.getCurCol());
         if (viewModel.isSolved())
             playerWon();
-        else if (winnerController != null)
-            winnerController.closeWindow();
         mazeDisplayer.requestFocus();
     }
 
@@ -269,7 +249,6 @@ public class MyViewController implements Initializable,Observer,IView {
             stage.setTitle("Congratulations");
             stage.setScene(new Scene(root, 275, 333));
             WinnerStageController winnerWindow = fxmlLoader.getController();
-            MyViewController.setWinnerController(winnerWindow);
             winnerWindow.setView(this);
             stage.setOnCloseRequest(event -> {
                 winnerWindow.closeWindow();
@@ -349,7 +328,6 @@ public class MyViewController implements Initializable,Observer,IView {
 
 
     public void openAbout() {
-        if (MyViewController.aboutController == null) {
             Parent root;
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(new File("src/resources/View/About.fxml").toURI().toURL());
@@ -358,7 +336,6 @@ public class MyViewController implements Initializable,Observer,IView {
                 stage.setTitle("About");
                 stage.setScene(new Scene(root, 342, 452));
                 AboutController view = fxmlLoader.getController();
-                MyViewController.setAboutController(view);
                 stage.setOnCloseRequest(event -> {
                     view.closeWindow();
                 });
@@ -369,10 +346,8 @@ public class MyViewController implements Initializable,Observer,IView {
                 e.printStackTrace();
             }
         }
-    }
 
     public void openHelp() {
-        if (MyViewController.helpController == null) {
             Parent root;
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(new File("src/resources/View/Help.fxml").toURI().toURL());
@@ -381,7 +356,6 @@ public class MyViewController implements Initializable,Observer,IView {
                 stage.setTitle("Help");
                 stage.setScene(new Scene(root, 605, 388));
                 HelpController view = fxmlLoader.getController();
-                MyViewController.setHelpController(view);
                 stage.setOnCloseRequest(event -> {
                     view.closeWindow();
                 });
@@ -392,7 +366,6 @@ public class MyViewController implements Initializable,Observer,IView {
                 e.printStackTrace();
             }
         }
-    }
 
     public static void playSound(MediaPlayer sound) {
         if (isSoundOn) {
@@ -483,8 +456,12 @@ public class MyViewController implements Initializable,Observer,IView {
 
     public void stageResized() {
         Scene scene = btn_newGame.getScene();
-        mazeDisplayer.heightProperty().bind(mazeDisplayerBoarderPane.heightProperty());
-        mazeDisplayer.widthProperty().bind(mazeDisplayerBoarderPane.widthProperty());
+        Stage stage=(Stage) scene.getWindow();
+        mazeDisplayer.heightProperty().bind(mazeDisplayerPane.heightProperty());
+        mazeDisplayer.widthProperty().bind(mazeDisplayerPane.widthProperty());
+
+        stage.maximizedProperty().addListener((ov, t, t1) -> mazeDisplayer.draw());
+        stage.iconifiedProperty().addListener((ov, t, t1) -> mazeDisplayer.draw());
 
         scene.heightProperty().addListener((observable, oldValue, newValue) -> {
             mazeDisplayer.draw();

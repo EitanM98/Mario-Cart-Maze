@@ -30,7 +30,7 @@ public class AboutController implements Initializable {
     public void closeWindow(){
         Stage stage = (Stage) content.getScene().getWindow();
         stage.close();
-        MyViewController.setAboutController(null);
+//        MyViewController.setAboutController(null);
     }
 
     @Override

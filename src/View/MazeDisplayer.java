@@ -24,7 +24,6 @@ public class MazeDisplayer extends Canvas implements Initializable {
     private int col_player = 0;
     private Position start;
     private Position goal;
-    //    private boolean isSolved=false;
     private boolean showSol = false;
     private int[][] solution;
     private boolean hintRequested;
@@ -33,7 +32,6 @@ public class MazeDisplayer extends Canvas implements Initializable {
     private double cellWidth;
     public static final double maxScale = 10.0d;
     public static final double minScale = .1d;
-    //    private double zoomValue=0;
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameStart = new SimpleStringProperty();

@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -62,8 +63,16 @@ public class PreferencesController implements Initializable {
             generatingAlgorithm=prop.getProperty("mazeGeneratingAlgorithm");
             searchingAlgorithm=prop.getProperty("mazeSearchingAlgorithm");
             character=MazeDisplayer.getMazeCharacter();
-            generating_cmb.setValue(generatingAlgorithm);
-            searching_cmb.setValue(searchingAlgorithm);
+            if(Objects.equals(generatingAlgorithm, "SimpleMazeGenerator"))
+                generating_cmb.setValue("Simple Generator");
+            else
+                generating_cmb.setValue("My Generator");
+            if(Objects.equals(searchingAlgorithm, "BreadthFirstSearch"))
+                searching_cmb.setValue("Breadth First Search");
+            else if (Objects.equals(searchingAlgorithm, "DepthFirstSearch"))
+                searching_cmb.setValue("Depth First Search");
+            else
+                searching_cmb.setValue("Best First Search");
             character_cmb.setValue(character);
     }
 
