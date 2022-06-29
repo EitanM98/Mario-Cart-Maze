@@ -2,8 +2,12 @@ package View;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -11,8 +15,10 @@ import javafx.scene.paint.Color;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MazeDisplayer extends Canvas {
+public class MazeDisplayer extends Canvas implements Initializable {
 
     private Maze maze;
     private int row_player =0;
@@ -24,24 +30,42 @@ public class MazeDisplayer extends Canvas {
     private int[][] solution;
     private boolean hintRequested;
     private int hint_index;
+    private double cellHeight;
+    private double cellWidth;
+    public static final double maxScale = 10.0d;
+    public static final double minScale = .1d;
+//    private double zoomValue=0;
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameStart = new SimpleStringProperty();
     StringProperty imageFileNameGoal = new SimpleStringProperty();
     StringProperty imageFileNameSoloutionStep = new SimpleStringProperty("Resources/Images/Banana.png");
+    private static String mazeCharacter="Mario";
 
+    DoubleProperty myScaleX = new SimpleDoubleProperty(1.0);
+    DoubleProperty myScaleY = new SimpleDoubleProperty(1.0);
+
+    public static String getMazeCharacter() {
+        return mazeCharacter;
+    }
+
+//    public void setZoomValue(double zoomValue) {
+//        this.zoomValue = zoomValue;
+//    }
+
+
+
+    public void setCellHeight(double cellHeight) {
+        this.cellHeight = cellHeight;
+    }
+
+    public void setCellWidth(double cellWidth) {
+        this.cellWidth = cellWidth;
+    }
 
     public boolean isHintRequested() {
         return hintRequested;
     }
-
-//    public boolean isSolved() {
-//        return isSolved;
-//    }
-
-//    public void setSolved(boolean solved) {
-//        isSolved = solved;
-//    }
 
     public boolean isShowSol() {
         return showSol;
@@ -142,6 +166,18 @@ public class MazeDisplayer extends Canvas {
 
     }
 
+    public double getCellHeight() {
+        double canvasHeight = getHeight();
+        int rows = maze.getLength();
+        return (canvasHeight ) / rows;
+    }
+
+    public double getCellWidth() {
+        double canvasWidth = getWidth();
+        int cols = maze.getWidth();
+        return (canvasWidth) / cols;
+    }
+
     public void requestHint(int cur_hint) {
         if(cur_hint>0 && cur_hint<solution.length-1){
             this.hintRequested = true;
@@ -170,10 +206,10 @@ public class MazeDisplayer extends Canvas {
         {
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            int row = maze.getLength();
-            int col = maze.getWidth();
-            double cellHeight = canvasHeight/row;
-            double cellWidth = canvasWidth/col;
+            double cellHeight = getCellHeight();
+            double cellWidth = getCellWidth();
+            setCellHeight(cellHeight);
+            setCellWidth(cellWidth);
             GraphicsContext graphicsContext = getGraphicsContext2D();
             graphicsContext.clearRect(0,0,canvasWidth,canvasHeight);
             drawStartEnd(graphicsContext,cellHeight,cellWidth);
@@ -272,11 +308,60 @@ public class MazeDisplayer extends Canvas {
     public void setCharacter(String character) {
         StringProperty path=null;
         switch (character) {
-            case "Mario" -> path = new SimpleStringProperty("Resources/Images/Mario.png");
-            case "Toad"-> path=new SimpleStringProperty("Resources/Images/Toad_img.jpg");
-            case "Luigi"-> path=new SimpleStringProperty("Resources/Images/Luigi.png");
+            case "Mario" -> {
+                path = new SimpleStringProperty("Resources/Images/Mario.png");
+                mazeCharacter="Mario";
+            }
+            case "Toad" -> {
+                path=new SimpleStringProperty("Resources/Images/Toad_img.jpg");
+                mazeCharacter="Toad";
+            }
+            case "Luigi" -> {
+                path=new SimpleStringProperty("Resources/Images/Luigi.png");
+                mazeCharacter="Luigi";
+            }
         }
         if(path!=null)
             imageFileNamePlayer=path;
     }
+
+    public double getScale_x() {
+        return myScaleX.get();
+    }
+
+    public void setScale_x( double scale) {
+        myScaleX.set(scale);
+    }
+
+    public double getScale_y() {
+        return myScaleX.get();
+    }
+
+    public void setScale_y( double scale) {
+        myScaleY.set(scale);
+    }
+
+    public void setPivot( double x, double y) {
+        setTranslateX(getTranslateX()-x);
+        setTranslateY(getTranslateY()-y);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        scaleXProperty().bind(myScaleX);
+        scaleYProperty().bind(myScaleY);
+    }
+
+//    public void zoomOut() {
+//        if ((this.getHeight() + zoomValue) / maze.getLength() >= 1 &&
+//                (this.getWidth() + zoomValue/this.maze.getWidth() >= 1)){
+//            setZoomValue(zoomValue-25);
+//            draw();
+//        }
+//    }
+//
+//    public void zoomIn() {
+//        setZoomValue(zoomValue+25);
+//        draw();
+//    }
 }

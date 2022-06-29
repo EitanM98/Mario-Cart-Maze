@@ -33,7 +33,7 @@ public class GenerateMazeController implements Initializable,IView{
         comboBox_difficulty.getItems().addAll(
                 "Easy","Medium","Hard"
         );
-        comboBox_difficulty.setPromptText("Please select one");
+        comboBox_difficulty.setValue("Easy");
         radioBtnRand.setSelected(false);
         radioBtnCustom.setSelected(true);
     }
@@ -61,15 +61,14 @@ public class GenerateMazeController implements Initializable,IView{
             if(radioBtnCustom.isSelected())
                 viewModel.generateMaze(textField_mazeRows.getText(),textField_mazeColumns.getText());
             else if(radioBtnRand.isSelected()){
-                if(comboBox_difficulty.getValue()==null)
-                    throw new Exception("Please choose difficulty level");
-                String choice=comboBox_difficulty.getValue().toString();
+//                if(comboBox_difficulty.getValue()==null)
+//                    throw new Exception("Please choose difficulty level");
+                String choice=comboBox_difficulty.getValue();
                 String level="";
                 switch (choice){
                     case "Easy"->level=easy_lvl;
                     case "Medium"-> level=medium_lvl;
                     case "Hard"->level=hard_lvl;
-                    default -> throw new Exception("Please choose difficulty level");
                 }
                 viewModel.generateMaze(level,level);
             }

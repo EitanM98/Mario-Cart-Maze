@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="333.0" prefWidth="268.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.WinnerStageController">
+<AnchorPane prefHeight="333.0" prefWidth="268.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.WinnerStageController">
    <children>
       <ImageView fitHeight="302.0" fitWidth="280.0" layoutX="1.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
          <image>

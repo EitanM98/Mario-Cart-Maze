@@ -17,13 +17,15 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Mario Kart Maze");
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setScene(new Scene(root, 600, 600));
         IModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         MyViewController view = fxmlLoader.getController();
         view.setHostServices(getHostServices());
         view.setViewModel(viewModel);
         primaryStage.show();
+        view.stageResized();
+//        view.mazeDisplayer.setOnDragDetected(view::dragDetected);
         primaryStage.setOnCloseRequest(event->{view.exitGameAlert();});
 
     }

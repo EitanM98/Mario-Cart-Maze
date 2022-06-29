@@ -145,6 +145,13 @@ public class MyViewModel extends Observable implements Observer {
         model.updatePlayerPosition(direction);
     }
 
+    public void movePlayer(double newX,double newY,double prevX,double prevY,
+                           double mazeDisplayerCellWidth,double mazeDisplayerCellHeight){
+
+        model.movePlayerByMouse(newX,newY,prevX,prevY,mazeDisplayerCellWidth,mazeDisplayerCellHeight);
+    }
+
+
     public void solveMaze()
     {
         model.solveMaze();

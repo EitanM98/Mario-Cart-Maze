@@ -3,7 +3,6 @@ package View;
 import ViewModel.MyViewModel;
 import javafx.application.HostServices;
 //import javafx.event.ActionEvent;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,8 +11,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -32,15 +34,16 @@ public class MyViewController implements Initializable,Observer,IView {
     @FXML
     public Label lbl_Invalid_move;
     @FXML
-    public Button btn_newGame=new Button();
+    public Button btn_newGame = new Button();
     @FXML
-    public Button btn_showSolution=new Button();
+    public Button btn_showSolution = new Button();
     @FXML
-    public Button btn_giveHint=new Button();
-
+    public Button btn_giveHint = new Button();
+    @FXML
+    public BorderPane mazeDisplayerBoarderPane;
     private MyViewModel viewModel;
-    int hint_index =1;
-    private HostServices hostServices ;
+    int hint_index = 1;
+    private HostServices hostServices;
     //Controllers
     private static AboutController aboutController;
     private static GenerateMazeController newMazeController;
@@ -48,8 +51,8 @@ public class MyViewController implements Initializable,Observer,IView {
     private static WinnerStageController winnerController;
 
     //Sounds section:
-    public static boolean isSoundOn=true;
-    public static boolean isMusicOn=true;
+    public static boolean isSoundOn = true;
+    public static boolean isMusicOn = true;
     //Sounds paths
     static String hintSoundPath = "./Resources/Sounds/boing_sound.wav";
     static String bgMusicPath = "./Resources/Sounds/gameMusic.mp3";
@@ -71,14 +74,20 @@ public class MyViewController implements Initializable,Observer,IView {
     static Media winnerSoundMedia = new Media(winnerSoundFile.toURI().toString());
 
     //Media Players
-    public static MediaPlayer hintSoundPlayer =new MediaPlayer(hintMedia);
-    public static MediaPlayer bgMusicPlayer=new MediaPlayer(bgMusicMedia);
-    public static MediaPlayer errorSoundPlayer=new MediaPlayer(errorSoundMedia);
-    public static MediaPlayer winnerSoundPlayer=new MediaPlayer(winnerSoundMedia);
+    public static MediaPlayer hintSoundPlayer = new MediaPlayer(hintMedia);
+    public static MediaPlayer bgMusicPlayer = new MediaPlayer(bgMusicMedia);
+    public static MediaPlayer errorSoundPlayer = new MediaPlayer(errorSoundMedia);
+    public static MediaPlayer winnerSoundPlayer = new MediaPlayer(winnerSoundMedia);
+
+    //Mouse Events
+    double mouseX;
+    double mouseY;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playBackgroundMusic();
+        mazeDisplayer.heightProperty().bind(mazeDisplayerBoarderPane.heightProperty());
+        mazeDisplayer.widthProperty().bind(mazeDisplayerBoarderPane.widthProperty());
     }
 
     public static void setHelpController(HelpController helpController) {
@@ -145,16 +154,14 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
 
-    public static void showInfoAlert(String message,String title)
-    {
+    public static void showInfoAlert(String message, String title) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.setTitle(title);
         alert.show();
     }
 
-    public static void showErrorAlert(String message,String title)
-    {
+    public static void showErrorAlert(String message, String title) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText(message);
         alert.setTitle(title);
@@ -170,11 +177,6 @@ public class MyViewController implements Initializable,Observer,IView {
 
     }
 
-    public void mouseClicked(MouseEvent mouseEvent) {
-        mazeDisplayer.requestFocus();
-    }
-
-
     public void update(Observable o, Object arg) {
         if (o instanceof MyViewModel) {
 
@@ -185,29 +187,31 @@ public class MyViewController implements Initializable,Observer,IView {
                 case "Maze solved" -> mazeSolved();
                 case "Player moved" -> playerMoved();
                 case "Invalid move" -> invalidMove();
-                case "Settings Changed"->settingsChanged();
+                case "Settings Changed" -> settingsChanged();
             }
         }
     }
 
     private void settingsChanged() {
         //TO-DO
-        disableButtons(true);
-        mazeDisplayer.setVisible(false);
+        btn_giveHint.disableProperty().setValue(true);
+        btn_showSolution.disableProperty().setValue(true);
+        mazeDisplayer.draw();
+//        mazeDisplayer.setVisible(false);
     }
 
-    public void updateViewSettings(String character,boolean sound,boolean bgMusic){
+    public void updateViewSettings(String character, boolean sound, boolean bgMusic) {
         setIsMusicOn(bgMusic);
         setIsSoundOn(sound);
         playBackgroundMusic();
         mazeDisplayer.setCharacter(character);
-        if(viewModel.getMaze()!=null)
+        if (viewModel.getMaze() != null)
             mazeDisplayer.draw();
         mazeDisplayer.requestFocus();
     }
 
     private void invalidMove() {
-        Runnable task=()->{
+        Runnable task = () -> {
             lbl_Invalid_move.setVisible(true);
             try {
                 Thread.sleep(2000);
@@ -221,9 +225,9 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private void mazeGenerated() {
-       if(winnerController!=null)
+        if (winnerController != null)
             winnerController.closeWindow();
-        if(newMazeController!=null)
+        if (newMazeController != null)
             newMazeController.closeWindow();
 //        mazeDisplayer.setVisible(true);
         mazeDisplayer.setStart(viewModel.getMaze().getStartPosition());
@@ -231,7 +235,7 @@ public class MyViewController implements Initializable,Observer,IView {
         mazeDisplayer.drawMaze(viewModel.getMaze());
         mazeDisplayer.setShowSol(false);
         disableButtons(false);
-        hint_index =1;
+        hint_index = 1;
         mazeDisplayer.requestFocus();
     }
 
@@ -242,13 +246,13 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
 
-
     private void playerMoved() {
-        mazeDisplayer.set_player_position(viewModel.getCurRow(),viewModel.getCurCol());
-        if(viewModel.isSolved())
+        mazeDisplayer.set_player_position(viewModel.getCurRow(), viewModel.getCurCol());
+        if (viewModel.isSolved())
             playerWon();
-        else if(winnerController!=null)
+        else if (winnerController != null)
             winnerController.closeWindow();
+        mazeDisplayer.requestFocus();
     }
 
 
@@ -268,7 +272,7 @@ public class MyViewController implements Initializable,Observer,IView {
                 playBackgroundMusic();
             });
             stage.show();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         MyViewController.playSound(MyViewController.winnerSoundPlayer);
@@ -281,29 +285,26 @@ public class MyViewController implements Initializable,Observer,IView {
 //        solutionIndex=viewModel.getSolution().length;
     }
 
-    public void showHideSolution()
-    {
-        if(viewModel.getSolPath()==null) {  //First use of hide or show soloution =Solve and Show Solution
+    public void showHideSolution() {
+        if (viewModel.getSolPath() == null) {  //First use of hide or show soloution =Solve and Show Solution
             this.viewModel.solveMaze();
-            hint_index =mazeDisplayer.getSolution().length;
+            hint_index = mazeDisplayer.getSolution().length;
             mazeDisplayer.showSolution();
-        }
-        else if(mazeDisplayer.isShowSol()) {     //Hide
-            hint_index =1;
+        } else if (mazeDisplayer.isShowSol()) {     //Hide
+            hint_index = 1;
             mazeDisplayer.hideSolution();
-        }
-        else{ //Show solution
-            hint_index =mazeDisplayer.getSolution().length;
+        } else { //Show solution
+            hint_index = mazeDisplayer.getSolution().length;
             mazeDisplayer.showSolution();
         }
         mazeDisplayer.requestFocus();
     }
 
-    public void giveAHint(){
-        if(!mazeDisplayer.isShowSol()){ //Solution isn't shown already
-            if(mazeDisplayer.getSolution()==null){ //Not solved yet
+    public void giveAHint() {
+        if (!mazeDisplayer.isShowSol()) { //Solution isn't shown already
+            if (mazeDisplayer.getSolution() == null) { //Not solved yet
                 this.viewModel.solveMaze();
-                hint_index =1;
+                hint_index = 1;
             }
             mazeDisplayer.requestHint(hint_index);
             hint_index++;
@@ -320,7 +321,7 @@ public class MyViewController implements Initializable,Observer,IView {
         }
     }
 
-    public void exitGame(){
+    public void exitGame() {
         if (viewModel != null) {
             viewModel.exitGame();
         }
@@ -328,8 +329,8 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     public void saveMaze() {
-        if(viewModel.getMaze()==null)
-            showErrorAlert("The maze is empty \n Please generate a maze first","Saving Error");
+        if (viewModel.getMaze() == null)
+            showErrorAlert("The maze is empty \n Please generate a maze first", "Saving Error");
         else
             viewModel.saveMaze();
     }
@@ -390,8 +391,8 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     public static void playSound(MediaPlayer sound) {
-        if(isSoundOn){
-            if(MyViewController.isMusicOn){
+        if (isSoundOn) {
+            if (MyViewController.isMusicOn) {
                 MyViewController.bgMusicPlayer.stop();
             }
             sound.play();
@@ -402,14 +403,13 @@ public class MyViewController implements Initializable,Observer,IView {
     }
 
     private static void playBackgroundMusic() {
-        if(isMusicOn){ //Start
+        if (isMusicOn) { //Start
             bgMusicPlayer.play();
             bgMusicPlayer.setOnEndOfMedia(() -> {
                 bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
                 bgMusicPlayer.play();
             });
-        }
-        else{ //Stop
+        } else { //Stop
             bgMusicPlayer.stop();
             bgMusicPlayer.seek(bgMusicPlayer.getStartTime());
         }
@@ -424,6 +424,7 @@ public class MyViewController implements Initializable,Observer,IView {
             stage.setTitle("Preferences");
             stage.setScene(new Scene(root, 235, 400));
             PreferencesController prefController = fxmlLoader.getController();
+//            prefController.initialize(null,null);
             prefController.setViewController(this);
             stage.setOnCloseRequest(event -> {
                 prefController.closeWindow();
@@ -435,6 +436,137 @@ public class MyViewController implements Initializable,Observer,IView {
             e.printStackTrace();
         }
     }
+
+    //Mouse Events:
+
+    private void setMouseXY(double x, double y) {
+        mouseX = x;
+        mouseY = y;
+    }
+
+    public void dragDetected(MouseEvent event) {
+        setMouseXY(event.getX(), event.getY());
+//        drag_detected = true;
+        mazeDisplayer.startFullDrag();
+        mazeDisplayer.setOnMouseDragOver(this::mouseDragged);
+        mazeDisplayer.setOnMouseDragReleased(this::mouseReleased);
+    }
+
+    public void mouseDragged(MouseEvent mouseEvent) {
+        if (viewModel.getMaze() != null) {
+            if (draggedLongEnough(mouseEvent)) {
+                double curX = mouseX;
+                double curY = mouseY;
+                viewModel.movePlayer(mouseEvent.getX(), mouseEvent.getY(), curX, curY,
+                        mazeDisplayer.getCellHeight(), mazeDisplayer.getCellWidth());
+                setMouseXY(mouseEvent.getX(), mouseEvent.getY());
+            }
+        }
+        mazeDisplayer.requestFocus();
+    }
+
+    //Return true if the mouse was dragged long enough
+    private boolean draggedLongEnough(MouseEvent mouseEvent) {
+        double newX = mouseEvent.getX();
+        double newY = mouseEvent.getY();
+        return (Math.abs(newX - this.mouseX) >= (mazeDisplayer.getCellWidth() / 3) || Math.abs(newY - this.mouseY) >= (mazeDisplayer.getCellHeight() / 3));
+    }
+
+
+    public void mouseClicked(MouseEvent mouseEvent) {
+//        setMouseXY(mouseEvent.getX(),mouseEvent.getY());
+//        mazeDisplayer.requestFocus();
+    }
+
+    public void mouseReleased(MouseEvent mouseEvent) {
+        setMouseXY(mouseEvent.getX(), mouseEvent.getY());
+//        mouseEvent.consume();
+    }
+
+    public void stageResized() {
+        Scene scene = btn_newGame.getScene();
+        mazeDisplayer.heightProperty().bind(mazeDisplayerBoarderPane.heightProperty());
+        mazeDisplayer.widthProperty().bind(mazeDisplayerBoarderPane.widthProperty());
+
+        scene.heightProperty().addListener((observable, oldValue, newValue) -> {
+            mazeDisplayer.draw();
+        });
+        scene.widthProperty().addListener((observable, oldValue, newValue) -> {
+            mazeDisplayer.draw();
+        });
+    }
+
+//    public void zoomMaze(ScrollEvent scrollEvent) {
+//        double deltaY = scrollEvent.getDeltaY();
+//        if (scrollEvent.isControlDown()) {
+//            double zoomFactor = 1.1;
+//            if (deltaY < 0) {
+//                zoomFactor = 0.90;
+//            }
+//            Scale newScale = new Scale();
+//            newScale.setX(mazeDisplayer.getScaleX() * zoomFactor);
+//            newScale.setY(mazeDisplayer.getScaleY() * zoomFactor);
+//            newScale.setPivotX(mazeDisplayer.getScaleX());
+//            newScale.setPivotY(mazeDisplayer.getScaleY());
+//            mazeDisplayer.getTransforms().add(newScale);
+//            mazeDisplayerBoarderPane.set
+//            mazeDisplayerScrollPane.setContent(mazeDisplayer);
+//            scrollEvent.consume();
+//        }
+//    }
+//        public void zoomMaze(ScrollEvent scrollEvent) {
+//            double deltaY = scrollEvent.getDeltaY();
+//            if (scrollEvent.isControlDown()) {
+//                if (deltaY < 0)
+//                    mazeDisplayer.zoomOut();
+//                else
+//                    mazeDisplayer.zoomIn();
+//            }
+//        }
+    public void zoomMaze(ScrollEvent event) {
+        if(event.isControlDown()) {
+            double delta = 1.1;
+
+//        double scaleX = mazeDisplayer.getScaleX();
+            double scaleY = mazeDisplayer.getScaleY();
+//        double oldScaleX = scaleX;
+            double oldScaleY = scaleY;
+
+//        if (event.getDeltaX() < 0)
+//            scaleX /= delta;
+//        else
+//            scaleX *= delta;
+            if (event.getDeltaY() < 0)
+                scaleY /= delta;
+            else
+                scaleY *= delta;
+//        scaleX=clamp( scaleX, MazeDisplayer.minScale,MazeDisplayer.maxScale);
+            scaleY = isInScale(scaleY, MazeDisplayer.minScale, MazeDisplayer.maxScale);
+
+//        double fx = (scaleX / oldScaleX)-1;
+            double fy = (scaleY / oldScaleY) - 1;
+
+            double dx = (event.getSceneX() - (mazeDisplayer.getBoundsInParent().getWidth() / 2 + mazeDisplayer.getBoundsInParent().getMinX()));
+            double dy = (event.getSceneY() - (mazeDisplayer.getBoundsInParent().getHeight() / 2 + mazeDisplayer.getBoundsInParent().getMinY()));
+
+            mazeDisplayer.setScaleX(scaleY);
+            mazeDisplayer.setScaleY(scaleY);
+
+            // note: pivot value must be untransformed, i. e. without scaling
+            mazeDisplayer.setPivot(fy * dx, fy * dy);
+            mazeDisplayer.draw();
+            event.consume();
+        }
+    }
+
+    private double isInScale( double value, double min, double max) {
+            if( value < min)
+                return min;
+            if( value > max)
+                return max;
+            return value;
+            }
+
 }
 
 

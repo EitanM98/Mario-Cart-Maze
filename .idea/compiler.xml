@@ -15,7 +15,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ATP-Project-PartC" options="--add-exports java.datatransfer/java.awt=view.atpprojectpartc" />
+      <module name="ATP-Project-PartC" options="" />
     </option>
   </component>
 </project>

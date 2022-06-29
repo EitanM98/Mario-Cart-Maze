@@ -26,4 +26,6 @@ public interface IModel {
     void saveMaze();
 
     void exitGame();
+
+    void movePlayerByMouse(double newX, double newY, double prevX, double prevY, double mazeDisplayerCellWidth, double mazeDisplayerCellHeight);
 }

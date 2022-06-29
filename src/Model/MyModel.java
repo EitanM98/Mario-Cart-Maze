@@ -6,19 +6,21 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 import View.MyViewController;
-import algorithms.search.AState;
-import algorithms.search.MazeState;
+import algorithms.search.*;
 import Server.Server;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
-import algorithms.search.Solution;
 import Server.*;
 import Client.*;
 import IO.*;
-import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 
 public class MyModel extends Observable implements IModel{
     private Maze maze;
@@ -30,6 +32,9 @@ public class MyModel extends Observable implements IModel{
     private Server mazeGeneratingServer;
     private Server solveSearchProblemServer;
 
+    private static final Logger LOG = LogManager.getLogger();
+
+
     public MyModel() {
         maze = null;
         solution=null;
@@ -39,8 +44,6 @@ public class MyModel extends Observable implements IModel{
         solveSearchProblemServer = new Server(5401,1000, new ServerStrategySolveSearchProblem());
         mazeGeneratingServer.start();
         solveSearchProblemServer.start();
-//        solveSearchProblemServer.start();
-//        mazeGeneratingServer.start();
     }
 
     public int getCurRow() {
@@ -112,6 +115,7 @@ public class MyModel extends Observable implements IModel{
                 this.setChanged();
                 this.notifyObservers("Maze loaded");
             } catch (Exception e){
+                LOG.error("Maze loading failed");
                 MyViewController.showErrorAlert("Maze loading failed \n Please check your file","Failed loading");
             }
         }
@@ -130,8 +134,10 @@ public class MyModel extends Observable implements IModel{
             try {
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(mazeFile));
                 objectOutputStream.writeObject(this.maze);
+                LOG.info("Maze was successfully saved");
                 MyViewController.showInfoAlert("Successfully saved","Saved");
             } catch (IOException e) {
+                LOG.error("Failed saving the maze");
                 MyViewController.showErrorAlert("Wrong file format\n couldn't save the maze ","Saving Error");
             }
         }
@@ -143,7 +149,6 @@ public class MyModel extends Observable implements IModel{
         mazeGeneratingServer.stop();
         solveSearchProblemServer.stop();
     }
-
 
     public Maze getMaze() {
         return maze;
@@ -180,11 +185,51 @@ public class MyModel extends Observable implements IModel{
                 }
             });
             client.communicateWithServer();
+            LOG.info("Maze with "+rows+" rows and "+cols+" cols was successfully generated for "+InetAddress.getLocalHost()+ "address");
         } catch (UnknownHostException e) {
+            LOG.debug("Maze couldn't be generated");
             e.printStackTrace();
         }
         setChanged();
         notifyObservers("Maze generated");
+    }
+
+    @Override
+    public void movePlayerByMouse(double newX, double newY, double prevX, double prevY, double mazeDisplayerCellWidth, double mazeDisplayerCellHeight) {
+        int direction=0;
+        boolean right = false,left=false,up=false,down=false;
+        if(Math.abs(newX-prevX)>=mazeDisplayerCellWidth/3){
+            if(newX>prevX)
+                right=true;
+            else
+                left=true;
+        }
+        if(Math.abs(newY-prevY)>=mazeDisplayerCellHeight/3){
+            if(newY>prevY)
+                down=true;
+            else
+                up=true;
+        }
+        if(right) {
+            if (up)
+                direction = 6;
+            else if (down)
+                direction = 7;
+            else
+                direction=4;
+        } else if(left){
+            if (up)
+                direction = 5;
+            else if (down)
+                direction = 8;
+            else
+                direction=3;
+        } else if (up){
+            direction=1;
+        }else if(down){
+            direction=2;
+        }
+        updatePlayerPosition(direction);
     }
 
     public void updatePlayerPosition(int direction)
@@ -204,45 +249,45 @@ public class MyModel extends Observable implements IModel{
         switch(direction)
         {
             case 1: //Up
-                if(curRow!=0)
+                if(curRow>0)
                     newRow=curRow-1;
                 break;
 
             case 2: //Down
-                if(curRow!=maze.getLength()-1)
+                if(curRow<maze.getLength()-1)
                     newRow=curRow+1;
                 break;
             case 3: //Left
-                if(curCol!=0)
+                if(curCol>0)
                     newCol=curCol-1;
                 break;
             case 4: //Right
-                if(curCol!=maze.getWidth()-1)
+                if(curCol<maze.getWidth()-1)
                     newCol=curCol+1;
                 break;
             case 5://Left-top
-                if(curCol!=0 && curRow!=0)
+                if(curCol>0 && curRow>0)
                     if(maze.getValue(curRow,curCol-1)==0 || maze.getValue(curRow-1,curCol)==0){
                         newCol=curCol-1;
                         newRow=curRow-1;
                     }
                 break;
             case 6://Right-top
-                if(curRow!=0 && curCol!=maze.getWidth()-1)
+                if(curRow>0 && curCol<maze.getWidth()-1)
                     if(maze.getValue(curRow,curCol+1)==0 || maze.getValue(curRow-1,curCol)==0){
                         newCol=curCol+1;
                         newRow=curRow-1;
                     }
                 break;
             case 7: // Right-bottom
-                if(curRow!=maze.getLength()-1 && curCol!=maze.getWidth()-1)
+                if(curRow<maze.getLength()-1 && curCol<maze.getWidth()-1)
                     if(maze.getValue(curRow,curCol+1)==0 || maze.getValue(curRow+1,curCol)==0){
                         newCol=curCol+1;
                         newRow=curRow+1;
                     }
                 break;
             case 8://Left-Bottom
-                if(curCol!=0 && curRow!=maze.getLength()-1 )
+                if(curCol>0 && curRow<maze.getLength()-1 )
                     if(maze.getValue(curRow,curCol-1)==0 || maze.getValue(curRow+1,curCol)==0){
                         newCol=curCol-1;
                         newRow=curRow+1;
@@ -279,12 +324,15 @@ public class MyModel extends Observable implements IModel{
                             toServer.flush();
                             solution = (Solution) fromServer.readObject();
                         } catch (Exception e) {
+                            LOG.error("Error solving while solving a maze");
                             e.printStackTrace();
                         }
                     }
                 });
                 client.communicateWithServer();
+                LOG.info("A maze was solved for "+InetAddress.getLocalHost()+" the solution has "+solution.getSolutionPath().size()+" moves.");
             } catch (UnknownHostException e) {
+                LOG.error("Error solving while solving a maze");
                 e.printStackTrace();
             }
             setChanged();
@@ -294,6 +342,16 @@ public class MyModel extends Observable implements IModel{
 
     public void updateProperties(String mazeGenerator,String searchingAlgorithm){
         Configurations config=Configurations.getInstance();
+        if(mazeGenerator.compareTo("Simple Generator")==0)
+            mazeGenerator="SimpleMazeGenerator";
+        else
+            mazeGenerator="MyMazeGenerator";
+        switch (searchingAlgorithm) {
+            case "Depth First Search" -> searchingAlgorithm = "DepthFirstSearch";
+            case "Breadth First Search" -> searchingAlgorithm = "BreadthFirstSearch";
+            //We have chosen BestFirstSearch to be default algorithm
+            default -> searchingAlgorithm = "BestFirstSearch";
+        }
         config.AddOrUpdateProperty("mazeGeneratingAlgorithm",mazeGenerator);
         config.AddOrUpdateProperty("mazeSearchingAlgorithm",searchingAlgorithm);
         restartSevers();
@@ -305,7 +363,7 @@ public class MyModel extends Observable implements IModel{
         mazeGeneratingServer.stop();
         solveSearchProblemServer.stop();
         try {
-            Thread.sleep(2500);
+            Thread.sleep(500);
         }
         catch (InterruptedException e){
             e.printStackTrace();

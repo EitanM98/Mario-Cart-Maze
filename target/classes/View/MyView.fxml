@@ -6,8 +6,10 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -16,10 +18,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import View.*?>
 <!--<?import View.*?>-->
+<?import View.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" onMouseClicked="#mouseClicked" prefHeight="456.0" prefWidth="631.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="ViewPane" maxHeight="1.7976931348623157E308" onDragDetected="#dragDetected" onMouseClicked="#mouseClicked" prefHeight="497.0" prefWidth="693.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="163.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
@@ -90,17 +92,7 @@
         </VBox>
     </top>
    <center>
-      <BorderPane prefHeight="392.0" prefWidth="373.0" BorderPane.alignment="CENTER">
-         <center>
-              <Pane fx:id="mazeDisplayerPane" prefHeight="345.0" prefWidth="1450.0" BorderPane.alignment="CENTER">
-                  <children>
-                      <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNameGoal="Resources/Images/goal-position.jpg" imageFileNamePlayer="Resources/Images/Mario.png" imageFileNameStart="Resources/Images/Start-position.jpg" imageFileNameWall="./Resources/Images/WaterWall.jpg" onKeyPressed="#keyPressed" width="400.0" />
-                  </children>
-                  <padding>
-                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                  </padding>
-              </Pane>
-         </center>
+      <BorderPane fx:id="mazeDisplayerBoarderPane" onMouseClicked="#mouseClicked" prefHeight="485.0" prefWidth="515.0" BorderPane.alignment="CENTER">
          <bottom>
             <Label fx:id="lbl_Invalid_move" alignment="CENTER" prefHeight="17.0" prefWidth="499.0" text="***Invalid move, you can't move through walls*** " textAlignment="CENTER" textFill="RED" visible="false" BorderPane.alignment="CENTER">
                <font>
@@ -108,6 +100,24 @@
                </font>
             </Label>
          </bottom>
+         <center>
+            <ScrollPane fx:id="mazeDisplayerScrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <content>
+                <AnchorPane >
+                     <children>
+                          <Pane fx:id="mazeDisplayerPane" onScroll="#zoomMaze">
+                              <children>
+                                  <MazeDisplayer fx:id="mazeDisplayer" imageFileNameGoal="Resources/Images/goal-position.jpg" imageFileNamePlayer="Resources/Images/Mario.png" imageFileNameStart="Resources/Images/Start-position.jpg" imageFileNameWall="./Resources/Images/WaterWall.jpg" onKeyPressed="#keyPressed" />
+                              </children>
+                              <padding>
+                                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                              </padding>
+                          </Pane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </center>
       </BorderPane>
    </center>
 </BorderPane>
