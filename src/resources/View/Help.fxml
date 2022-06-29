@@ -7,34 +7,25 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="388.0" prefWidth="562.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.HelpController">
+<AnchorPane prefHeight="486.0" prefWidth="808.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.HelpController">
    <children>
-      <VBox prefHeight="201.0" prefWidth="605.0">
+      <VBox prefHeight="243.0" prefWidth="494.0">
          <children>
-            <HBox prefHeight="151.0" prefWidth="600.0">
+            <HBox prefHeight="200.0" prefWidth="494.0">
                <children>
-                  <VBox prefHeight="80.0" prefWidth="347.0">
+                  <VBox prefHeight="226.0" prefWidth="494.0">
                      <children>
                         <Label fx:id="how_to_play_lbl" prefHeight="27.0" prefWidth="289.0" styleClass="help_labels,help_headings" text="How To Play?" textAlignment="CENTER" />
-                        <Label fx:id="instructions_lbl" prefHeight="165.0" prefWidth="289.0" styleClass="help_labels" text="instructions" />
+                        <Label fx:id="instructions_lbl" prefHeight="166.0" prefWidth="494.0" styleClass="help_labels" text="instructions" />
                      </children>
                   </VBox>
-                  <HBox prefHeight="156.0" prefWidth="224.0">
-                     <children>
-                        <ImageView fitHeight="204.0" fitWidth="317.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Images/Help_img.jpg" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </HBox>
                </children>
             </HBox>
          </children>
       </VBox>
-      <VBox layoutY="198.0" prefHeight="190.0" prefWidth="605.0">
+      <VBox layoutY="268.0" prefHeight="221.0" prefWidth="814.0">
          <children>
-            <HBox prefHeight="240.0" prefWidth="600.0">
+            <HBox prefHeight="228.0" prefWidth="605.0">
                <children>
                   <HBox prefHeight="201.0" prefWidth="302.0">
                      <children>
@@ -55,5 +46,10 @@
             </HBox>
          </children>
       </VBox>
+      <ImageView fitHeight="221.0" fitWidth="317.0" layoutX="497.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Help_img.jpg" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

@@ -101,7 +101,7 @@ public class MyModel extends Observable implements IModel{
         fileWindow.setInitialFileName("myMaze.mk_maze");
         fileWindow.getExtensionFilters().add( new FileChooser.ExtensionFilter("Maze Files (*.maze)","*.maze"));
         fileWindow.setInitialDirectory(new File("./src/resources"));
-        File file = fileWindow.showOpenDialog(new Stage());//Problem here!!!!
+        File file = fileWindow.showOpenDialog(new Stage());
         if (file != null) {
             try {
                 ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
@@ -198,13 +198,13 @@ public class MyModel extends Observable implements IModel{
     public void movePlayerByMouse(double newX, double newY, double prevX, double prevY, double mazeDisplayerCellWidth, double mazeDisplayerCellHeight) {
         int direction=0;
         boolean right = false,left=false,up=false,down=false;
-        if(Math.abs(newX-prevX)>=mazeDisplayerCellWidth/3){
+        if(Math.abs(newX-prevX)>=mazeDisplayerCellWidth/2){
             if(newX>prevX)
                 right=true;
             else
                 left=true;
         }
-        if(Math.abs(newY-prevY)>=mazeDisplayerCellHeight/3){
+        if(Math.abs(newY-prevY)>=mazeDisplayerCellHeight/2){
             if(newY>prevY)
                 down=true;
             else

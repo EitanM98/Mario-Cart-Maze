@@ -24,6 +24,9 @@ Button:hover{
 
 .mazeDisplayer{
     -fx-background-color: #b1cbbb;
+    -fx-border-color: #674d3c ;
+    -fx-border-width: 7 ;
+    -fx-border-style: solid;
 }
 
 .mazePadding{

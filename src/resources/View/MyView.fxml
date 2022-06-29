@@ -69,7 +69,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                        <MenuItem styleClass="menu-item" fx:id="menu_NewMaze" mnemonicParsing="false" onAction="#generateMaze" text="New Maze" />
+                        <MenuItem fx:id="menu_NewMaze" mnemonicParsing="false" onAction="#generateMaze" styleClass="menu-item" text="New Maze" />
                                 <MenuItem fx:id="menu_LoadMaze" mnemonicParsing="false" onAction="#loadMaze" text="Load Maze" />
                         <MenuItem fx:id="menu_SaveMaze" mnemonicParsing="false" onAction="#saveMaze" text="Save Maze" />
                             </items>
@@ -98,7 +98,7 @@
    <center>
       <BorderPane fx:id="mazeDisplayerBoarderPane" disable="true" onMouseClicked="#mouseClicked" prefHeight="485.0" prefWidth="515.0" visible="false" BorderPane.alignment="CENTER">
          <bottom>
-            <Label fx:id="lbl_Invalid_move" alignment="CENTER" prefHeight="39.0" prefWidth="499.0" text="***Invalid move, you can't move through walls*** " textAlignment="CENTER" textFill="RED" visible="false" BorderPane.alignment="CENTER">
+            <Label fx:id="lbl_Invalid_move" alignment="CENTER" prefHeight="30.0" prefWidth="499.0" text="***Invalid move, you can't move through walls*** " textAlignment="CENTER" textFill="RED" visible="false" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold Italic" size="35.0" />
                </font>

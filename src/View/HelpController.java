@@ -21,12 +21,13 @@ public class HelpController implements Initializable {
     public Label qa_content_lbl;
 
     private final String howTo="How to play?";
-    private final String instructions="* The goal of the game is to get\n  to the goal point.\n" +
+    private final String instructions="* The goal of the game is to reach the goal point.\n" +
             "* You can't go through walls.\n" +
-            "* To move the player use keyboard arrows\n" +
-            "  or use the Numpad as follows:\n" +
+            "* Easiest way to move is dragging the mouse over the maze\n"+
+            "* Alternatively you can use keyboard Numpad as follows:\n" +
             "  2,4,6,8- To move down,left,right,up \n" +
-            "  1,3,7,9- To move diagonally.\n";
+            "  1,3,7,9- To move diagonally.\n"+
+            "* Keyboard arrows will also work for you.";
     private final String qAndA="Frequently asked questions: ";
     private final String qa_content="Q: The maze was great how can I save it?\n" +
             "A: On the menu toolbar:File -> Save Maze.\n\n" +

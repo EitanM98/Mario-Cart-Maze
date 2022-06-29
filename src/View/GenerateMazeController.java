@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class GenerateMazeController implements Initializable,IView{
+public class GenerateMazeController implements Initializable{
        private MyViewModel viewModel;
         @FXML
         public TextField textField_mazeSize;

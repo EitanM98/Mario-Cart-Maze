@@ -47,9 +47,8 @@ public class MyViewController implements Initializable,Observer,IView {
     private static GenerateMazeController generateMazeController=null;
 
     //Sounds section:
-    //TODO: Change to true
-    public static boolean isSoundOn = false;
-    public static boolean isMusicOn = false;
+    public static boolean isSoundOn = true;
+    public static boolean isMusicOn = true;
     //Sounds paths
     static String hintSoundPath = "./src/resources/Sounds/boing_sound.wav";
     static String bgMusicPath = "./src/resources/Sounds/gameMusic.mp3";
@@ -254,6 +253,8 @@ public class MyViewController implements Initializable,Observer,IView {
                 winnerWindow.closeWindow();
                 playBackgroundMusic();
             });
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -354,7 +355,7 @@ public class MyViewController implements Initializable,Observer,IView {
                 root = fxmlLoader.load();
                 Stage stage = new Stage();
                 stage.setTitle("Help");
-                stage.setScene(new Scene(root, 605, 388));
+                stage.setScene(new Scene(root, 808, 486));
                 HelpController view = fxmlLoader.getController();
                 stage.setOnCloseRequest(event -> {
                     view.closeWindow();
@@ -423,7 +424,6 @@ public class MyViewController implements Initializable,Observer,IView {
 
     public void dragDetected(MouseEvent event) {
         setMouseXY(event.getX(), event.getY());
-//        drag_detected = true;
         mazeDisplayer.startFullDrag();
         mazeDisplayer.setOnMouseDragOver(this::mouseDragged);
         mazeDisplayer.setOnMouseDragReleased(this::mouseReleased);
@@ -434,8 +434,9 @@ public class MyViewController implements Initializable,Observer,IView {
             if (draggedLongEnough(mouseEvent)) {
                 double curX = mouseX;
                 double curY = mouseY;
+                setMouseXY(mouseEvent.getX(), mouseEvent.getY());
                 viewModel.movePlayer(mouseEvent.getX(), mouseEvent.getY(), curX, curY,
-                        mazeDisplayer.getCellHeight(), mazeDisplayer.getCellWidth());
+                        mazeDisplayer.getCellWidth(), mazeDisplayer.getCellHeight());
                 setMouseXY(mouseEvent.getX(), mouseEvent.getY());
             }
         }
@@ -446,7 +447,7 @@ public class MyViewController implements Initializable,Observer,IView {
     private boolean draggedLongEnough(MouseEvent mouseEvent) {
         double newX = mouseEvent.getX();
         double newY = mouseEvent.getY();
-        return (Math.abs(newX - this.mouseX) >= (mazeDisplayer.getCellWidth() / 3) || Math.abs(newY - this.mouseY) >= (mazeDisplayer.getCellHeight() / 3));
+        return (Math.abs(newX - this.mouseX) >= (mazeDisplayer.getCellWidth() / 2) || Math.abs(newY - this.mouseY) >= (mazeDisplayer.getCellHeight() / 2));
     }
 
 
