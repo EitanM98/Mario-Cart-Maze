@@ -32,6 +32,7 @@ public class PreferencesController implements Initializable {
     private String character;
     private MyViewController viewController;
     private Properties prop;
+
     public void setViewController(MyViewController viewController) {
         this.viewController = viewController;
     }
@@ -51,6 +52,7 @@ public class PreferencesController implements Initializable {
             }
         }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -76,9 +78,11 @@ public class PreferencesController implements Initializable {
             character_cmb.setValue(character);
     }
 
+//    Save setting only if they're changed
     public void saveSettings() {
         boolean algorithmsChanged;
-        if(generating_cmb.getValue().equals(generatingAlgorithm) && searching_cmb.getValue().equals(searchingAlgorithm))
+        if(generating_cmb.getValue().replaceAll("\\s","Maze").equals(generatingAlgorithm)
+                && searching_cmb.getValue().replaceAll("\\s","").equals(searchingAlgorithm))
             algorithmsChanged =false;
         else{
             algorithmsChanged =true;

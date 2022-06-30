@@ -1,28 +1,16 @@
 package ViewModel;
 
 import Model.IModel;
-import View.GenerateMazeController;
 import View.MyViewController;
 import algorithms.mazeGenerators.Maze;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.stage.Stage;
-import javafx.util.Pair;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
+// The mediator between the Model and the View. Observes the model.
 public class MyViewModel extends Observable implements Observer {
 
-    private IModel model;
+    private final IModel model;
     private Maze maze;
     private int[][] solPath;
     private int curRow;
@@ -67,6 +55,7 @@ public class MyViewModel extends Observable implements Observer {
         this.solPath = solPath;
     }
 
+//    The model has changed, the ViewModel needs to be updated
     @Override
     public void update(Observable o, Object arg) {
             if(o instanceof IModel) {
@@ -77,6 +66,7 @@ public class MyViewModel extends Observable implements Observer {
                     case "Maze solved" -> mazeSolved();
                     case "Settings Changed"->settingsChanged();
                 }
+//                Updates the listeners (ViewController)
                 setChanged();
                 notifyObservers(event);
             }
@@ -108,6 +98,7 @@ public class MyViewModel extends Observable implements Observer {
                 this.getCurCol() == maze.getGoalPosition().getColumnIndex();
     }
 
+//    Validate input and forwards the data to the model
     public void generateMaze(String row_fromUser,String col_fromUser) {
         int rows=0;
         int cols=0;
@@ -130,6 +121,7 @@ public class MyViewModel extends Observable implements Observer {
         }
     }
 
+//    Forwards to the model the keyEvent that happened after validation
     public void movePlayer (KeyEvent keyEvent)
     {
         int direction = switch (keyEvent.getCode()) {
@@ -147,6 +139,7 @@ public class MyViewModel extends Observable implements Observer {
         model.updatePlayerPosition(direction);
     }
 
+//    Forwards to the model a player move by dragging the mouse
     public void movePlayer(double newX,double newY,double prevX,double prevY,
                            double mazeDisplayerCellWidth,double mazeDisplayerCellHeight){
 

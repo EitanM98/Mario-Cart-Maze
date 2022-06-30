@@ -6,7 +6,7 @@ import javafx.scene.input.KeyEvent;
 public interface IView {
     void setViewModel(MyViewModel viewModel);
     void generateMaze();
-    void keyPressed(KeyEvent keyEvent);
+    void onKeyPressed(KeyEvent keyEvent);
     void updateViewSettings(String character, boolean sound, boolean bgMusic);
     void showHideSolution();
     void giveAHint();

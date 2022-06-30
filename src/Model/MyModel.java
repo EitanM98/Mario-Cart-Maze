@@ -16,12 +16,10 @@ import IO.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
-
+// Our backend class
 public class MyModel extends Observable implements IModel{
     private Maze maze;
     private Position startPos;
@@ -40,6 +38,7 @@ public class MyModel extends Observable implements IModel{
         solution=null;
         curRow =0;
         curCol =0;
+//        Server starting
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401,1000, new ServerStrategySolveSearchProblem());
         mazeGeneratingServer.start();
@@ -54,27 +53,14 @@ public class MyModel extends Observable implements IModel{
         return curCol;
     }
 
-    public int getStartRow(){
-        return startPos.getRowIndex();
-    }
-
-    public int getStartCol(){
-        return startPos.getColumnIndex();
-    }
-
-    public int getGoalRow(){
-        return goalPos.getRowIndex();
-    }
-
-    public int getGoalCol(){
-        return goalPos.getColumnIndex();
+    public Maze getMaze() {
+        return maze;
     }
 
     @Override
     public void assignObserver(Observer o) {
         this.addObserver(o);
     }
-
 
     /**
      * each row in the array is [row_number,col_number] of each step in the solution path
@@ -143,22 +129,15 @@ public class MyModel extends Observable implements IModel{
         }
 
     }
-
+//Stop servers
     @Override
     public void exitGame() {
         mazeGeneratingServer.stop();
         solveSearchProblemServer.stop();
     }
 
-    public Maze getMaze() {
-        return maze;
-    }
-
-    public int[][] getMazeGrid() {
-        return maze.getMaze();
-    }
-
-
+//    Sends a request to the generating server and recieves a new maze,
+//    the maze is saved to the model and updates viewModel that a change has occurred
     public void generateRandomMaze(int rows, int cols)
     {
         try {
@@ -194,10 +173,12 @@ public class MyModel extends Observable implements IModel{
         notifyObservers("Maze generated");
     }
 
+//    Compares x and y coordinates to decide where to move the player
     @Override
     public void movePlayerByMouse(double newX, double newY, double prevX, double prevY, double mazeDisplayerCellWidth, double mazeDisplayerCellHeight) {
         int direction=0;
         boolean right = false,left=false,up=false,down=false;
+//        Check if the mouse was drag long enough
         if(Math.abs(newX-prevX)>=mazeDisplayerCellWidth/2){
             if(newX>prevX)
                 right=true;
@@ -232,9 +213,10 @@ public class MyModel extends Observable implements IModel{
         updatePlayerPosition(direction);
     }
 
+//    Moves the player after the direction was determined
     public void updatePlayerPosition(int direction)
     {
-        /*
+        /* Direction translation:
             direction = 1 -> Up
             direction = 2 -> Down
             direction = 3 -> Left
@@ -310,6 +292,8 @@ public class MyModel extends Observable implements IModel{
         }
     }
 
+//    Sends a request to the solving server and receives the maze's solution,
+//    the solution is saved to the model and updates viewModel that a change has occurred
     @Override
     public void solveMaze() {
         if (this.maze != null) {
@@ -340,6 +324,7 @@ public class MyModel extends Observable implements IModel{
         }
     }
 
+//    Updates properties file with new searching/generating algorithms
     public void updateProperties(String mazeGenerator,String searchingAlgorithm){
         Configurations config=Configurations.getInstance();
         if(mazeGenerator.compareTo("Simple Generator")==0)

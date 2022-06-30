@@ -38,7 +38,6 @@ public class HelpController implements Initializable {
     public void closeWindow(){
         Stage stage = (Stage) how_to_play_lbl.getScene().getWindow();
         stage.close();
-//        MyViewController.setHelpController(null);
     }
 
     @Override

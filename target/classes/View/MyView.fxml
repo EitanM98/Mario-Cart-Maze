@@ -105,14 +105,13 @@
             </Label>
          </bottom>
          <center>
-              <Pane fx:id="mazeDisplayerPane" onScroll="#zoomMaze" styleClass="mazeDisplayer" BorderPane.alignment="CENTER">
-                  <children>
-                      <MazeDisplayer fx:id="mazeDisplayer" imageFileNameGoal="src/resources/Images/goal-position.jpg" imageFileNamePlayer="src/resources/Images/Mario.png" imageFileNameStart="src/resources/Images/Start-position.jpg" imageFileNameWall="./src/resources/Images/woodWall.jpg" onKeyPressed="#keyPressed" />
-                  </children>
-                  <padding>
-                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                  </padding>
-              </Pane>
+             <Pane fx:id="mazeDisplayerPane" onScroll="#zoomMaze" styleClass="mazeDisplayer"
+                   BorderPane.alignment="CENTER">
+                 <padding>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                 </padding>
+                 <MazeDisplayer fx:id="mazeDisplayer" onKeyPressed="#onKeyPressed"/>
+             </Pane>
          </center>
           <BorderPane.margin>
               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

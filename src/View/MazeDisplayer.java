@@ -2,50 +2,44 @@ package View;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class MazeDisplayer extends Canvas implements Initializable {
+// Canvas Controller to hold the game's board
+public class MazeDisplayer extends Canvas {
 
+//    Maze details
     private Maze maze;
     private int row_player = 0;
     private int col_player = 0;
     private Position start;
     private Position goal;
-    private boolean showSol = false;
     private int[][] solution;
+
+    private boolean showSol = false;
     private boolean hintRequested;
     private int hint_index;
+//    Default character
+    private static String mazeCharacter = "Mario";
+//    Canvas dimensions
     private double cellHeight;
     private double cellWidth;
-    public static final double maxScale = 10.0d;
-    public static final double minScale = .1d;
-    StringProperty imageFileNameWall = new SimpleStringProperty();
-    StringProperty imageFileNamePlayer = new SimpleStringProperty();
-    StringProperty imageFileNameStart = new SimpleStringProperty();
-    StringProperty imageFileNameGoal = new SimpleStringProperty();
+//    Images sources
+    StringProperty imageFileNameWall = new SimpleStringProperty("./src/resources/Images/woodWall.jpg");
+    StringProperty imageFileNamePlayer = new SimpleStringProperty("src/resources/Images/Mario.png");
+    StringProperty imageFileNameStart = new SimpleStringProperty("src/resources/Images/Start-position.jpg");
+    StringProperty imageFileNameGoal = new SimpleStringProperty("src/resources/Images/goal-position.jpg");
     StringProperty imageFileNameSoloutionStep = new SimpleStringProperty("src/resources/Images/Banana.png");
-    private static String mazeCharacter = "Mario";
-
-    DoubleProperty myScaleX = new SimpleDoubleProperty(1.0);
-    DoubleProperty myScaleY = new SimpleDoubleProperty(1.0);
 
     public static String getMazeCharacter() {
         return mazeCharacter;
     }
-
 
     public void setCellHeight(double cellHeight) {
         this.cellHeight = cellHeight;
@@ -100,45 +94,20 @@ public class MazeDisplayer extends Canvas implements Initializable {
         return imageFileNameStart.get();
     }
 
-    public void setImageFileNameStart(String imageFileNameStart) {
-        this.imageFileNameStart.set(imageFileNameStart);
-    }
-
     public String getImageFileNameGoal() {
         return imageFileNameGoal.get();
     }
 
-//    public String getImageFileNameRoad() {
-//        return imageFileNameRoad.get();
-//    }
-
-
     public String getImageFileNameSoloutionStep() {
         return imageFileNameSoloutionStep.get();
-    }
-
-    public StringProperty imageFileNameSoloutionStepProperty() {
-        return imageFileNameSoloutionStep;
-    }
-
-    public void setImageFileNameGoal(String imageFileNameGoal) {
-        this.imageFileNameGoal.set(imageFileNameGoal);
     }
 
     public String getImageFileNameWall() {
         return imageFileNameWall.get();
     }
 
-    public void setImageFileNameWall(String imageFileNameWall) {
-        this.imageFileNameWall.set(imageFileNameWall);
-    }
-
     public String getImageFileNamePlayer() {
         return imageFileNamePlayer.get();
-    }
-
-    public void setImageFileNamePlayer(String imageFileNamePlayer) {
-        this.imageFileNamePlayer.set(imageFileNamePlayer);
     }
 
     public int getRow_player() {
@@ -153,7 +122,6 @@ public class MazeDisplayer extends Canvas implements Initializable {
         this.row_player = row;
         this.col_player = col;
         draw();
-
     }
 
     public double getCellHeight() {
@@ -168,6 +136,7 @@ public class MazeDisplayer extends Canvas implements Initializable {
         return ((canvasWidth) / cols);
     }
 
+//    Show one more step of the solution
     public void requestHint(int cur_hint) {
         if (cur_hint > 0 && cur_hint < solution.length - 1) {
             this.hintRequested = true;
@@ -177,7 +146,7 @@ public class MazeDisplayer extends Canvas implements Initializable {
         this.hintRequested = false;
     }
 
-
+// Updates the details of the maze and draws it
     public void drawMaze(Maze maze) {
         if (maze != null) {
             this.maze = maze;
@@ -189,6 +158,7 @@ public class MazeDisplayer extends Canvas implements Initializable {
         }
     }
 
+//    Drawing functionality of the game board
     public void draw() {
         if (maze != null) {
             double canvasHeight = getHeight();
@@ -197,12 +167,14 @@ public class MazeDisplayer extends Canvas implements Initializable {
             double cellWidth = getCellWidth();
             setCellHeight(cellHeight);
             setCellWidth(cellWidth);
+//            Init a canvas
             GraphicsContext graphicsContext = getGraphicsContext2D();
             graphicsContext.clearRect(0, 0, canvasWidth, canvasHeight);
             graphicsContext.setStroke(Color.BLACK);
             graphicsContext.setLineWidth(1);
             drawStartEnd(graphicsContext, cellHeight, cellWidth);
             graphicsContext.setFill(Color.BROWN);
+//            Draw components
             drawWalls(graphicsContext, cellHeight, cellWidth);
             if (isShowSol())
                 drawSolution(graphicsContext, cellHeight, cellWidth, solution.length - 1); //Give all the solution
@@ -290,7 +262,7 @@ public class MazeDisplayer extends Canvas implements Initializable {
         graphicsContext.drawImage(playerImage, w_player, h_player, cellWidth, cellHeight);
     }
 
-
+// If character property is changed, the character's image will be updated
     public void setCharacter(String character) {
         StringProperty path = null;
         switch (character) {
@@ -311,14 +283,4 @@ public class MazeDisplayer extends Canvas implements Initializable {
             imageFileNamePlayer = path;
     }
 
-    public void setPivot(double x, double y) {
-        setTranslateX(getTranslateX() - x);
-        setTranslateY(getTranslateY() - y);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        scaleXProperty().bind(myScaleX);
-        scaleYProperty().bind(myScaleY);
-    }
 }

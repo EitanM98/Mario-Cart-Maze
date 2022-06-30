@@ -1,16 +1,11 @@
 package View;
 
 import ViewModel.MyViewModel;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.net.URL;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
 public class GenerateMazeController implements Initializable{
@@ -40,17 +35,19 @@ public class GenerateMazeController implements Initializable{
         this.viewModel = viewModel;
     }
 
+//    Choose only one option
     public void setRadioBtnCustom(){
             radioBtnCustom.setSelected(true);
             radioBtnRand.setSelected(false);
     }
+
 
     public void setRadioBtnRand(){
         radioBtnCustom.setSelected(false);
         radioBtnRand.setSelected(true);
     }
 
-
+// Generate maze with custom size or fixed by levels
     public void generateMaze() {
         String easy_lvl="15";
         String medium_lvl="30";
